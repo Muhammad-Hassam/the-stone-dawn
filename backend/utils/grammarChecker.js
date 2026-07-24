@@ -1,7 +1,7 @@
 const axios = require("axios");
 
-const LT_API = process.env.LANGUAGETOOL_API || "https://api.languagetool.org/v2/check";
-const LT_LANG = process.env.LANGUAGETOOL_LANG || "en-US";
+const LT_API = process.env.LANGUAGETOOL_API;
+const LT_LANG = process.env.LANGUAGETOOL_LANG;
 
 // LanguageTool public API works best with chunks under ~15,000 chars per request
 const CHUNK_SIZE = 12000;
@@ -41,7 +41,10 @@ async function checkChunk(chunkText, chunkOffset) {
     const offset = m.offset + chunkOffset;
     const length = m.length;
     const originalText = chunkText.substr(m.offset, m.length);
-    const suggestions = (m.replacements || []).slice(0, 5).map((r) => r.value).filter(Boolean);
+    const suggestions = (m.replacements || [])
+      .slice(0, 5)
+      .map((r) => r.value)
+      .filter(Boolean);
     const category = m.rule && m.rule.category ? m.rule.category.id : "OTHER";
 
     return {
