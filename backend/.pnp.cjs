@@ -30,12 +30,14 @@ const RAW_RUNTIME_STATE =
           ["axios", "npm:1.18.1"],\
           ["bcryptjs", "npm:2.4.3"],\
           ["cors", "npm:2.8.6"],\
+          ["dictionary-en", "npm:4.0.0"],\
           ["dotenv", "npm:16.6.1"],\
           ["express", "npm:4.22.2"],\
           ["jsonwebtoken", "npm:9.0.3"],\
           ["mongoose", "npm:8.24.1"],\
           ["multer", "npm:1.4.5-lts.2"],\
           ["nodemon", "npm:3.1.14"],\
+          ["nspell", "npm:2.1.5"],\
           ["pdfjs-dist", "npm:6.1.200"],\
           ["pdfkit", "npm:0.15.2"],\
           ["uuid", "npm:9.0.1"]\
@@ -54,10 +56,10 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["@mongodb-js/saslprep", [\
-      ["npm:1.4.12", {\
-        "packageLocation": "../../../.yarn/berry/cache/@mongodb-js-saslprep-npm-1.4.12-d98220a5da-10c0.zip/node_modules/@mongodb-js/saslprep/",\
+      ["npm:1.4.13", {\
+        "packageLocation": "../../../.yarn/berry/cache/@mongodb-js-saslprep-npm-1.4.13-ce4757d54d-10c0.zip/node_modules/@mongodb-js/saslprep/",\
         "packageDependencies": [\
-          ["@mongodb-js/saslprep", "npm:1.4.12"],\
+          ["@mongodb-js/saslprep", "npm:1.4.13"],\
           ["sparse-bitfield", "npm:3.0.3"]\
         ],\
         "linkType": "HARD"\
@@ -785,6 +787,15 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["dictionary-en", [\
+      ["npm:4.0.0", {\
+        "packageLocation": "../../../.yarn/berry/cache/dictionary-en-npm-4.0.0-5e8927ecdf-10c0.zip/node_modules/dictionary-en/",\
+        "packageDependencies": [\
+          ["dictionary-en", "npm:4.0.0"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["dotenv", [\
       ["npm:16.6.1", {\
         "packageLocation": "../../../.yarn/berry/cache/dotenv-npm-16.6.1-01334288ea-10c0.zip/node_modules/dotenv/",\
@@ -1382,6 +1393,15 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["is-buffer", [\
+      ["npm:2.0.5", {\
+        "packageLocation": "../../../.yarn/berry/cache/is-buffer-npm-2.0.5-17e563f277-10c0.zip/node_modules/is-buffer/",\
+        "packageDependencies": [\
+          ["is-buffer", "npm:2.0.5"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["is-callable", [\
       ["npm:1.2.7", {\
         "packageLocation": "../../../.yarn/berry/cache/is-callable-npm-1.2.7-808a303e61-10c0.zip/node_modules/is-callable/",\
@@ -1818,7 +1838,7 @@ const RAW_RUNTIME_STATE =
         "packageDependencies": [\
           ["mongodb", "virtual:605451cbfc61f8ad0030545d8aa4511f4a861f1d39679f8e326645a5584ef37c36e4f7cc71f2db1be99786b79432be9d237229e58cb8d6aecb4a40071a9f2f80#npm:6.20.0"],\
           ["@aws-sdk/credential-providers", null],\
-          ["@mongodb-js/saslprep", "npm:1.4.12"],\
+          ["@mongodb-js/saslprep", "npm:1.4.13"],\
           ["@mongodb-js/zstd", null],\
           ["@types/aws-sdk__credential-providers", null],\
           ["@types/gcp-metadata", null],\
@@ -1952,9 +1972,9 @@ const RAW_RUNTIME_STATE =
           ["nopt", "npm:10.0.1"],\
           ["proc-log", "npm:7.0.0"],\
           ["semver", "npm:7.8.5"],\
-          ["tar", "npm:7.5.21"],\
+          ["tar", "npm:7.5.22"],\
           ["tinyglobby", "npm:0.2.17"],\
-          ["undici", "npm:8.8.0"],\
+          ["undici", "npm:8.9.0"],\
           ["which", "npm:7.0.0"]\
         ],\
         "linkType": "HARD"\
@@ -1994,6 +2014,16 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "../../../.yarn/berry/cache/normalize-path-npm-3.0.0-658ba7d77f-10c0.zip/node_modules/normalize-path/",\
         "packageDependencies": [\
           ["normalize-path", "npm:3.0.0"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["nspell", [\
+      ["npm:2.1.5", {\
+        "packageLocation": "../../../.yarn/berry/cache/nspell-npm-2.1.5-3d3a2548e2-10c0.zip/node_modules/nspell/",\
+        "packageDependencies": [\
+          ["nspell", "npm:2.1.5"],\
+          ["is-buffer", "npm:2.0.5"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -2103,12 +2133,14 @@ const RAW_RUNTIME_STATE =
           ["axios", "npm:1.18.1"],\
           ["bcryptjs", "npm:2.4.3"],\
           ["cors", "npm:2.8.6"],\
+          ["dictionary-en", "npm:4.0.0"],\
           ["dotenv", "npm:16.6.1"],\
           ["express", "npm:4.22.2"],\
           ["jsonwebtoken", "npm:9.0.3"],\
           ["mongoose", "npm:8.24.1"],\
           ["multer", "npm:1.4.5-lts.2"],\
           ["nodemon", "npm:3.1.14"],\
+          ["nspell", "npm:2.1.5"],\
           ["pdfjs-dist", "npm:6.1.200"],\
           ["pdfkit", "npm:0.15.2"],\
           ["uuid", "npm:9.0.1"]\
@@ -2563,10 +2595,10 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["tar", [\
-      ["npm:7.5.21", {\
-        "packageLocation": "../../../.yarn/berry/cache/tar-npm-7.5.21-a057053fc3-10c0.zip/node_modules/tar/",\
+      ["npm:7.5.22", {\
+        "packageLocation": "../../../.yarn/berry/cache/tar-npm-7.5.22-4f603e5fa8-10c0.zip/node_modules/tar/",\
         "packageDependencies": [\
-          ["tar", "npm:7.5.21"],\
+          ["tar", "npm:7.5.22"],\
           ["@isaacs/fs-minipass", "npm:4.0.1"],\
           ["chownr", "npm:3.0.0"],\
           ["minipass", "npm:7.1.3"],\
@@ -2673,10 +2705,10 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["undici", [\
-      ["npm:8.8.0", {\
-        "packageLocation": "../../../.yarn/berry/cache/undici-npm-8.8.0-ee0a56cafc-10c0.zip/node_modules/undici/",\
+      ["npm:8.9.0", {\
+        "packageLocation": "../../../.yarn/berry/cache/undici-npm-8.9.0-493171ffbc-10c0.zip/node_modules/undici/",\
         "packageDependencies": [\
-          ["undici", "npm:8.8.0"]\
+          ["undici", "npm:8.9.0"]\
         ],\
         "linkType": "HARD"\
       }]\

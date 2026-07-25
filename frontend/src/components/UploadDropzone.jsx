@@ -1,18 +1,17 @@
 import { useRef, useState } from "react";
 
-export default function UploadDropzone({ onFileSelected, disabled }) {
+export default function UploadDropzone({ onFilesSelected, disabled }) {
   const inputRef = useRef(null);
   const [dragOver, setDragOver] = useState(false);
-  const [fileName, setFileName] = useState("");
 
-  const handleFile = (file) => {
-    if (!file) return;
-    if (file.type !== "application/pdf") {
-      alert("Please select a PDF file");
-      return;
+  const handleFiles = (fileList) => {
+    const files = Array.from(fileList || []);
+    const pdfs = files.filter((f) => f.type === "application/pdf");
+    const rejected = files.length - pdfs.length;
+    if (rejected > 0) {
+      alert(`${rejected} file(s) skipped — only PDFs are accepted`);
     }
-    setFileName(file.name);
-    onFileSelected(file);
+    if (pdfs.length > 0) onFilesSelected(pdfs);
   };
 
   return (
@@ -25,7 +24,7 @@ export default function UploadDropzone({ onFileSelected, disabled }) {
       onDrop={(e) => {
         e.preventDefault();
         setDragOver(false);
-        handleFile(e.dataTransfer.files?.[0]);
+        handleFiles(e.dataTransfer.files);
       }}
       onClick={() => !disabled && inputRef.current?.click()}
       className={`relative border-[3px] rounded-sm p-12 text-center cursor-pointer transition-colors bg-card ${
@@ -40,9 +39,13 @@ export default function UploadDropzone({ onFileSelected, disabled }) {
         ref={inputRef}
         type="file"
         accept="application/pdf"
+        multiple
         className="hidden"
         disabled={disabled}
-        onChange={(e) => handleFile(e.target.files?.[0])}
+        onChange={(e) => {
+          handleFiles(e.target.files);
+          e.target.value = ""; // allow re-selecting the same file(s) again later
+        }}
       />
 
       <div className="font-ui text-[10px] tracking-[0.25em] uppercase text-ink/40 mb-3">
@@ -50,10 +53,10 @@ export default function UploadDropzone({ onFileSelected, disabled }) {
       </div>
 
       <div className="font-display text-2xl text-ink mb-2">
-        {fileName ? fileName : "Drop your manuscript here"}
+        Drop one or more manuscripts here
       </div>
       <p className="font-ui text-sm text-ink/50">
-        or click to browse &middot; PDF only, up to 25MB
+        or click to browse &middot; PDF only, up to 25MB each
       </p>
     </div>
   );

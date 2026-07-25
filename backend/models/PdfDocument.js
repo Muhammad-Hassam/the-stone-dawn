@@ -57,6 +57,16 @@ const PdfDocumentSchema = new mongoose.Schema(
 
     mistakes: { type: [MistakeSchema], default: [] },
     mistakeCount: { type: Number, default: 0 },
+    spellingCount: { type: Number, default: 0 },
+    grammarCount: { type: Number, default: 0 },
+    punctuationCount: { type: Number, default: 0 },
+    otherCount: { type: Number, default: 0 },
+
+    checkerEngine: {
+      type: String,
+      enum: ["languagetool", "ai-gemini", "ai-chatgpt", "offline-spellcheck"],
+      default: "languagetool",
+    },
 
     pageCount: { type: Number, default: 0 },
     pages: { type: [PageSchema], default: [] }, // per-page width/height at scale 1, for the PDF viewer overlay

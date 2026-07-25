@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import axiosClient from "../api/axiosClient";
 import { useAuth } from "../context/AuthContext";
+import { engineLabel } from "../utils/engineLabels";
 
 function StatusTag({ status }) {
   const map = {
@@ -120,6 +121,10 @@ export default function HistoryPage() {
                     })}
                     {"  ·  "}
                     {doc.mistakeCount ?? 0} slip(s)
+                    {doc.status === "completed" &&
+                      `  ·  S:${doc.spellingCount ?? 0} G:${doc.grammarCount ?? 0} P:${doc.punctuationCount ?? 0}`}
+                    {"  ·  "}
+                    {engineLabel(doc.checkerEngine)}
                     {doc.fileSize ? `  ·  ${(doc.fileSize / 1024).toFixed(1)} KB` : ""}
                   </p>
                 </div>

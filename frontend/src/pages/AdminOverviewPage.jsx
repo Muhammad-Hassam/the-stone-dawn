@@ -43,7 +43,7 @@ export default function AdminOverviewPage() {
 
         {stats && (
           <>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
               <StatCard label="Staff" value={stats.totalUsers} accent="var(--color-redpen)" />
               <StatCard label="Total Copy" value={stats.totalDocuments} accent="var(--color-brass)" />
               <StatCard
@@ -52,6 +52,12 @@ export default function AdminOverviewPage() {
                 accent="var(--color-greenpen)"
               />
               <StatCard label="Failed Runs" value={stats.failedDocs} accent="#6B7A86" />
+            </div>
+
+            <div className="grid grid-cols-3 gap-4 mb-10">
+              <StatCard label="Spelling" value={stats.totalSpelling} accent="var(--color-redpen)" />
+              <StatCard label="Grammar" value={stats.totalGrammar} accent="var(--color-brass)" />
+              <StatCard label="Punctuation" value={stats.totalPunctuation} accent="#3B6E91" />
             </div>
 
             <h2 className="font-display text-2xl text-ink mb-4">Latest Filed Copy</h2>

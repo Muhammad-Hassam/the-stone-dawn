@@ -3,18 +3,22 @@ import { useParams, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import axiosClient from "../api/axiosClient";
 import PdfViewer from "../components/PdfViewer";
+import { downloadAuthedFile } from "../utils/downloadAuthedFile";
+import { engineLabel } from "../utils/engineLabels";
 
 const TABS = [
   { key: "marked", label: "Marked PDF" },
   { key: "clean", label: "Clean Copy" },
-  { key: "proof", label: "Proof Sheet" },
+  { key: "proof", label: "Proof Sheet" }
 ];
 
 function categoryTagClass(category) {
   const c = (category || "").toUpperCase();
-  if (c.includes("SPELL") || c.includes("TYPO")) return "text-redpen border-redpen";
+  if (c.includes("SPELL") || c.includes("TYPO"))
+    return "text-redpen border-redpen";
   if (c.includes("GRAMMAR")) return "text-brass border-brass";
-  return "text-[#4B5A66] border-[#4B5A66]";
+  if (c.includes("PUNCT")) return "text-[#3B6E91] border-[#3B6E91]";
+  return "text-[#8A8578] border-[#8A8578]";
 }
 
 export default function ResultPage() {
@@ -22,6 +26,7 @@ export default function ResultPage() {
   const [doc, setDoc] = useState(null);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState("marked");
+  const [downloading, setDownloading] = useState(""); // "" | "original" | "corrected"
   const pdfViewerRef = useRef(null);
 
   useEffect(() => {
@@ -54,23 +59,39 @@ export default function ResultPage() {
   if (!doc) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center bg-paper paper-texture">
-        <p className="font-serif text-ink/60">This edition could not be found.</p>
+        <p className="font-serif text-ink/60">
+          This edition could not be found.
+        </p>
       </div>
     );
   }
 
-  const apiBase = axiosClient.defaults.baseURL;
   const statusColor =
     doc.status === "completed"
       ? "text-greenpen"
       : doc.status === "failed"
-      ? "text-redpen"
-      : "text-brass";
+        ? "text-redpen"
+        : "text-brass";
 
   const showOnPdf = (idx) => {
     setTab("marked");
     // wait a tick so the tab is visible before we ask the viewer to jump
     setTimeout(() => pdfViewerRef.current?.goToMistake(idx), 50);
+  };
+
+  const handleDownload = async (kind) => {
+    setDownloading(kind);
+    try {
+      const filename =
+        kind === "corrected"
+          ? `corrected-${doc.originalName}`
+          : doc.originalName;
+      await downloadAuthedFile(`/pdf/${doc._id}/download/${kind}`, filename);
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setDownloading("");
+    }
   };
 
   return (
@@ -93,7 +114,9 @@ export default function ResultPage() {
               {doc.originalName}
             </h1>
             <p className="font-ui text-[12px] tracking-wide text-ink/60">
-              <span className={`font-semibold uppercase ${statusColor}`}>{doc.status}</span>
+              <span className={`font-semibold uppercase ${statusColor}`}>
+                {doc.status}
+              </span>
               {"  ·  "}
               {doc.mistakeCount} slip{doc.mistakeCount === 1 ? "" : "s"} caught
               {doc.pageCount ? `  ·  ${doc.pageCount} page(s)` : ""}
@@ -101,7 +124,7 @@ export default function ResultPage() {
               {new Date(doc.createdAt).toLocaleDateString("en-US", {
                 month: "long",
                 day: "numeric",
-                year: "numeric",
+                year: "numeric"
               })}
               {doc.uploadedBy?.name && (
                 <>
@@ -110,6 +133,26 @@ export default function ResultPage() {
                 </>
               )}
             </p>
+
+            {doc.status === "completed" && (
+              <div className="flex flex-wrap items-center gap-2 mt-3">
+                <span className="inline-block w-3 h-3 rounded-full bg-redpen" />
+                <span className="font-ui text-[10px] tracking-[0.1em] uppercase font-semibold px-2 py-0.5 border rounded-sm text-redpen border-redpen">
+                  {doc.spellingCount || 0} Spelling
+                </span>
+                <span className="inline-block w-3 h-3 rounded-full bg-brass" />
+                <span className="font-ui text-[10px] tracking-[0.1em] uppercase font-semibold px-2 py-0.5 border rounded-sm text-brass border-brass">
+                  {doc.grammarCount || 0} Grammar
+                </span>
+                <span className="inline-block w-3 h-3 rounded-full bg-[#3B6E91]" />
+                <span className="font-ui text-[10px] tracking-[0.1em] uppercase font-semibold px-2 py-0.5 border rounded-sm text-[#3B6E91] border-[#3B6E91]">
+                  {doc.punctuationCount || 0} Punctuation
+                </span>
+                <span className="font-ui text-[10px] tracking-[0.1em] uppercase text-ink/35 ml-1">
+                  checked by {engineLabel(doc.checkerEngine)}
+                </span>
+              </div>
+            )}
           </div>
 
           {doc.status === "completed" && (
@@ -128,19 +171,23 @@ export default function ResultPage() {
         </div>
 
         <div className="flex flex-wrap gap-3 mb-8">
-          <a
-            href={`${apiBase}/pdf/${doc._id}/download/original`}
-            className="font-ui text-[12px] tracking-[0.1em] uppercase font-semibold px-5 py-2.5 rounded-sm border-2 border-ink/70 text-ink hover:bg-ink hover:text-card transition-colors"
+          <button
+            onClick={() => handleDownload("original")}
+            disabled={downloading === "original"}
+            className="font-ui text-[12px] tracking-[0.1em] uppercase font-semibold px-5 py-2.5 rounded-sm border-2 border-ink/70 text-ink hover:bg-ink hover:text-card transition-colors disabled:opacity-50"
           >
-            Original Scan
-          </a>
+            {downloading === "original" ? "Preparing…" : "Original Scan"}
+          </button>
           {doc.correctedPath && (
-            <a
-              href={`${apiBase}/pdf/${doc._id}/download/corrected`}
-              className="font-ui text-[12px] tracking-[0.1em] uppercase font-semibold px-5 py-2.5 rounded-sm bg-redpen text-card hover:bg-[#8f2e24] transition-colors"
+            <button
+              onClick={() => handleDownload("corrected")}
+              disabled={downloading === "corrected"}
+              className="font-ui text-[12px] tracking-[0.1em] uppercase font-semibold px-5 py-2.5 rounded-sm bg-redpen text-card hover:bg-[#8f2e24] transition-colors disabled:opacity-50"
             >
-              Download Clean Copy
-            </a>
+              {downloading === "corrected"
+                ? "Preparing…"
+                : "Download Clean Copy"}
+            </button>
           )}
         </div>
 
@@ -177,20 +224,6 @@ export default function ResultPage() {
                 pages={doc.pages}
                 visible={tab === "marked"}
               />
-              <div className="flex flex-wrap gap-6 mt-4 font-ui text-[11px] tracking-wide uppercase text-ink/50">
-                <span className="flex items-center gap-2">
-                  <span className="inline-block w-3 h-3 rounded-full bg-redpen" />
-                  Spelling
-                </span>
-                <span className="flex items-center gap-2">
-                  <span className="inline-block w-3 h-3 rounded-full bg-brass" />
-                  Grammar
-                </span>
-                <span className="flex items-center gap-2">
-                  <span className="inline-block w-3 h-3 rounded-full bg-[#4B5A66]" />
-                  Other
-                </span>
-              </div>
             </div>
 
             {tab === "clean" && (
@@ -205,7 +238,9 @@ export default function ResultPage() {
               <div className="space-y-3">
                 {doc.mistakes.length === 0 && (
                   <div className="bg-card rounded-sm shadow-sm p-8 text-center">
-                    <p className="font-display text-xl text-greenpen">Clean copy — no slips found.</p>
+                    <p className="font-display text-xl text-greenpen">
+                      Clean copy — no slips found.
+                    </p>
                   </div>
                 )}
                 {doc.mistakes.map((m, idx) => (
@@ -244,7 +279,9 @@ export default function ResultPage() {
                           </span>
                         )}
                       </p>
-                      <p className="font-serif text-[13px] text-ink/60">{m.message}</p>
+                      <p className="font-serif text-[13px] text-ink/60">
+                        {m.message}
+                      </p>
                     </div>
                   </div>
                 ))}

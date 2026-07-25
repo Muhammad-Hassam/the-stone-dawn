@@ -10,7 +10,15 @@ async function getStats(req, res) {
       PdfDocument.countDocuments({ status: "completed" }),
       PdfDocument.countDocuments({ status: "failed" }),
       PdfDocument.aggregate([
-        { $group: { _id: null, total: { $sum: "$mistakeCount" } } },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: "$mistakeCount" },
+            spelling: { $sum: "$spellingCount" },
+            grammar: { $sum: "$grammarCount" },
+            punctuation: { $sum: "$punctuationCount" },
+          },
+        },
       ]),
       PdfDocument.find()
         .sort({ createdAt: -1 })
@@ -19,6 +27,8 @@ async function getStats(req, res) {
         .select("originalName status mistakeCount createdAt uploadedBy"),
     ]);
 
+  const agg = mistakeAgg[0] || {};
+
   res.json({
     success: true,
     data: {
@@ -26,7 +36,10 @@ async function getStats(req, res) {
       totalDocuments,
       completedDocs,
       failedDocs,
-      totalMistakesCaught: mistakeAgg[0]?.total || 0,
+      totalMistakesCaught: agg.total || 0,
+      totalSpelling: agg.spelling || 0,
+      totalGrammar: agg.grammar || 0,
+      totalPunctuation: agg.punctuation || 0,
       recentDocs,
     },
   });

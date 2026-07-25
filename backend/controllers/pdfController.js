@@ -3,9 +3,19 @@ const path = require("path");
 
 const PdfDocument = require("../models/PdfDocument");
 const { checkText, applyCorrections } = require("../utils/grammarChecker");
+const { checkTextWithGemini } = require("../utils/geminiChecker");
+const { checkTextWithChatGPT } = require("../utils/openaiChecker");
+const { checkTextOffline } = require("../utils/offlineSpellChecker");
 const { generateCorrectedPdf } = require("../utils/pdfGenerator");
 const { extractTextWithPositions, attachBoxesToMistakes } = require("../utils/pdfTextExtractor");
 const { UPLOAD_DIR } = require("../middleware/upload");
+
+const ENGINES = {
+  languagetool: checkText,
+  "ai-gemini": checkTextWithGemini,
+  "ai-chatgpt": checkTextWithChatGPT,
+  "offline-spellcheck": checkTextOffline,
+};
 
 // POST /api/pdf/upload
 async function uploadPdf(req, res) {
@@ -15,6 +25,7 @@ async function uploadPdf(req, res) {
 
   const absolutePath = req.file.path;
   const relativePath = path.join(process.env.UPLOAD_DIR || "uploads", req.file.filename);
+  const engine = ENGINES[req.body.engine] ? req.body.engine : "languagetool";
 
   // Create the DB record immediately so it shows in history even if processing fails
   const doc = await PdfDocument.create({
@@ -25,6 +36,7 @@ async function uploadPdf(req, res) {
     fileSize: req.file.size,
     mimeType: req.file.mimetype,
     status: "processing",
+    checkerEngine: engine,
   });
 
   try {
@@ -33,26 +45,43 @@ async function uploadPdf(req, res) {
     const parsed = await extractTextWithPositions(fileBuffer);
     const extractedText = parsed.fullText;
 
-    // 2. Run spelling/grammar check
-    const rawMistakes = await checkText(extractedText);
+    // 2. Run spelling/grammar/punctuation check with whichever engine was selected
+    const rawMistakes = await ENGINES[engine](extractedText);
 
     // 3. Attach on-page box(es) to each mistake so it can be pinned on the actual PDF
     const mistakes = attachBoxesToMistakes(rawMistakes, parsed.items);
 
-    // 4. Build corrected text using top suggestions
+    // 4. Tally mistakes by category for separate counts in the UI
+    const counts = mistakes.reduce(
+      (acc, m) => {
+        const cat = (m.category || "").toUpperCase();
+        if (cat === "SPELLING") acc.spelling += 1;
+        else if (cat === "GRAMMAR") acc.grammar += 1;
+        else if (cat === "PUNCTUATION") acc.punctuation += 1;
+        else acc.other += 1;
+        return acc;
+      },
+      { spelling: 0, grammar: 0, punctuation: 0, other: 0 }
+    );
+
+    // 5. Build corrected text using top suggestions
     const correctedText = applyCorrections(extractedText, mistakes);
 
-    // 5. Generate a corrected PDF file on disk
+    // 6. Generate a corrected PDF file on disk
     const correctedFileName = `corrected-${req.file.filename.replace(/\.pdf$/i, "")}.pdf`;
     const correctedAbsolutePath = path.join(UPLOAD_DIR, correctedFileName);
     await generateCorrectedPdf(correctedText, correctedAbsolutePath);
     const correctedRelativePath = path.join(process.env.UPLOAD_DIR || "uploads", correctedFileName);
 
-    // 6. Save everything to MongoDB (this record IS the history entry)
+    // 7. Save everything to MongoDB (this record IS the history entry)
     doc.extractedText = extractedText;
     doc.correctedText = correctedText;
     doc.mistakes = mistakes;
     doc.mistakeCount = mistakes.length;
+    doc.spellingCount = counts.spelling;
+    doc.grammarCount = counts.grammar;
+    doc.punctuationCount = counts.punctuation;
+    doc.otherCount = counts.other;
     doc.pageCount = parsed.numPages;
     doc.pages = parsed.pages;
     doc.correctedFileName = correctedFileName;

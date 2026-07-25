@@ -31,8 +31,21 @@ async function extractTextWithPositions(buffer) {
     for (const item of content.items) {
       if (typeof item.str !== "string") continue;
 
+      // PDFs frequently break a long word across a line with a hyphen
+      // ("misun-\nderstand"), which is a layout artifact, not a real
+      // hyphenated word. Left as-is, every checker engine flags both
+      // fragments as spelling errors. Heuristic: if a run ends the line
+      // with "<letter>-", drop the hyphen and don't insert a line break,
+      // so it reads as one continuous word ("misunderstand") to the
+      // checker. Trade-off: a genuine compound word that happens to wrap
+      // right at its hyphen (e.g. "well-\nknown") will lose its hyphen too
+      // — accepted here because automatic mid-word wrapping is far more
+      // common in justified body text than that coincidence.
+      const endsWithSoftHyphen = item.hasEOL && /[a-zA-Z]-$/.test(item.str);
+      const textToInsert = endsWithSoftHyphen ? item.str.slice(0, -1) : item.str;
+
       const offsetStart = fullText.length;
-      fullText += item.str;
+      fullText += textToInsert;
       const offsetEnd = fullText.length;
 
       if (item.str.trim().length > 0) {
@@ -44,14 +57,16 @@ async function extractTextWithPositions(buffer) {
 
         items.push({
           page: pageNum,
-          text: item.str,
+          text: textToInsert,
           offsetStart,
           offsetEnd,
           box: [Math.min(x0, x1), Math.min(y0, y1), Math.max(x0, x1), Math.max(y0, y1)],
         });
       }
 
-      fullText += item.hasEOL ? "\n" : " ";
+      if (!endsWithSoftHyphen) {
+        fullText += item.hasEOL ? "\n" : " ";
+      }
     }
 
     fullText += "\n\n"; // page break

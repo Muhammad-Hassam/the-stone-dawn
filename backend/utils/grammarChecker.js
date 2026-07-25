@@ -1,4 +1,5 @@
 const axios = require("axios");
+const { chunkText, normalizeCategory } = require("./textChunker");
 
 const LT_API = process.env.LANGUAGETOOL_API;
 const LT_LANG = process.env.LANGUAGETOOL_LANG;
@@ -6,33 +7,17 @@ const LT_LANG = process.env.LANGUAGETOOL_LANG;
 // LanguageTool public API works best with chunks under ~15,000 chars per request
 const CHUNK_SIZE = 12000;
 
-function chunkText(text, size) {
-  const chunks = [];
-  let start = 0;
-  while (start < text.length) {
-    let end = Math.min(start + size, text.length);
-    // try to break on a paragraph/sentence boundary so offsets stay meaningful
-    if (end < text.length) {
-      const lastBreak = text.lastIndexOf("\n", end);
-      if (lastBreak > start) end = lastBreak + 1;
-    }
-    chunks.push({ text: text.slice(start, end), start });
-    start = end;
-  }
-  return chunks;
-}
-
 /**
  * Calls LanguageTool for a single chunk and normalizes matches.
  */
-async function checkChunk(chunkText, chunkOffset) {
+async function checkChunk(chunkStr, chunkOffset) {
   const params = new URLSearchParams();
-  params.append("text", chunkText);
+  params.append("text", chunkStr);
   params.append("language", LT_LANG);
 
   const { data } = await axios.post(LT_API, params, {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    timeout: 30000,
+    timeout: 30000
   });
 
   const matches = data.matches || [];
@@ -40,12 +25,13 @@ async function checkChunk(chunkText, chunkOffset) {
   return matches.map((m) => {
     const offset = m.offset + chunkOffset;
     const length = m.length;
-    const originalText = chunkText.substr(m.offset, m.length);
+    const originalText = chunkStr.substr(m.offset, m.length);
     const suggestions = (m.replacements || [])
       .slice(0, 5)
       .map((r) => r.value)
       .filter(Boolean);
-    const category = m.rule && m.rule.category ? m.rule.category.id : "OTHER";
+    const rawCategory =
+      m.rule && m.rule.category ? m.rule.category.id : "OTHER";
 
     return {
       message: m.message,
@@ -56,13 +42,13 @@ async function checkChunk(chunkText, chunkOffset) {
       suggestions,
       appliedSuggestion: suggestions[0] || "",
       ruleId: m.rule ? m.rule.id : "",
-      category,
+      category: normalizeCategory(rawCategory)
     };
   });
 }
 
 /**
- * Checks full text for spelling/grammar mistakes.
+ * Checks full text for spelling/grammar/punctuation mistakes using LanguageTool.
  * Splits long text into chunks to respect API limits, and
  * offsets matches back to the position in the original full text.
  */

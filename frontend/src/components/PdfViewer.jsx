@@ -19,15 +19,20 @@ function categoryColor(category) {
   const c = (category || "").toUpperCase();
   if (c.includes("SPELL") || c.includes("TYPO")) return "var(--color-redpen)";
   if (c.includes("GRAMMAR")) return "var(--color-brass)";
-  return "#6B7A86";
+  if (c.includes("PUNCT")) return "#3B6E91";
+  return "#8A8578";
 }
+
+const ZOOM_MIN = 0.5;
+const ZOOM_MAX = 3;
+const ZOOM_STEP = 0.25;
 
 /**
  * Renders the actual uploaded PDF page-by-page on a canvas and overlays a
  * highlight + numbered pin at each mistake's real position on the page,
  * using the box coordinates the backend computed via pdf.js text-position
- * extraction (stored in scale-1 viewport space — we just multiply by our
- * current render scale to land in canvas pixels).
+ * extraction (stored in scale-1 viewport space — we multiply by our current
+ * fit-to-width scale AND the user's zoom level to land in canvas pixels).
  */
 const PdfViewer = forwardRef(function PdfViewer({ documentId, mistakes, pages, visible = true }, ref) {
   const containerRef = useRef(null);
@@ -37,6 +42,7 @@ const PdfViewer = forwardRef(function PdfViewer({ documentId, mistakes, pages, v
   const [pdfDoc, setPdfDoc] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [numPages, setNumPages] = useState(pages?.length || 1);
+  const [zoom, setZoom] = useState(1); // 1 = fit-to-width
   const [renderScale, setRenderScale] = useState(1);
   const [pageCssSize, setPageCssSize] = useState({ width: 0, height: 0 });
   const [openMistakeIdx, setOpenMistakeIdx] = useState(null);
@@ -79,7 +85,8 @@ const PdfViewer = forwardRef(function PdfViewer({ documentId, mistakes, pages, v
 
       const containerWidth = wrapperRef.current?.clientWidth || 700;
       const baseViewport = page.getViewport({ scale: 1 });
-      const scale = Math.min(containerWidth / baseViewport.width, 2.2);
+      const fitScale = containerWidth / baseViewport.width;
+      const scale = Math.min(fitScale * zoom, 4.5);
       const viewport = page.getViewport({ scale });
 
       const outputScale = window.devicePixelRatio || 1;
@@ -107,11 +114,15 @@ const PdfViewer = forwardRef(function PdfViewer({ documentId, mistakes, pages, v
     return () => {
       cancelled = true;
     };
-  }, [pdfDoc, currentPage, visible]);
+  }, [pdfDoc, currentPage, visible, zoom]);
 
   const mistakesOnPage = (mistakes || [])
     .map((m, idx) => ({ ...m, idx }))
     .filter((m) => m.boxes?.some((b) => b.page === currentPage));
+
+  const totalMistakes = mistakes?.length || 0;
+  const pinnedMistakes = (mistakes || []).filter((m) => m.boxes?.length > 0).length;
+  const unpinnedCount = totalMistakes - pinnedMistakes;
 
   const goToMistake = (idx) => {
     const m = mistakes?.[idx];
@@ -133,30 +144,61 @@ const PdfViewer = forwardRef(function PdfViewer({ documentId, mistakes, pages, v
         <div className="font-ui text-[11px] tracking-[0.15em] uppercase text-ink/50">
           {mistakesOnPage.length} slip{mistakesOnPage.length === 1 ? "" : "s"} on this page
         </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => {
-              setOpenMistakeIdx(null);
-              setCurrentPage((p) => Math.max(1, p - 1));
-            }}
-            disabled={currentPage <= 1}
-            className="font-ui text-[11px] tracking-[0.1em] uppercase font-semibold px-3 py-1.5 border border-ink/30 rounded-sm text-ink/70 disabled:opacity-30 hover:border-ink"
-          >
-            ‹ Prev
-          </button>
-          <span className="font-mono text-xs text-ink/60">
-            Page {currentPage} / {numPages}
-          </span>
-          <button
-            onClick={() => {
-              setOpenMistakeIdx(null);
-              setCurrentPage((p) => Math.min(numPages, p + 1));
-            }}
-            disabled={currentPage >= numPages}
-            className="font-ui text-[11px] tracking-[0.1em] uppercase font-semibold px-3 py-1.5 border border-ink/30 rounded-sm text-ink/70 disabled:opacity-30 hover:border-ink"
-          >
-            Next ›
-          </button>
+
+        <div className="flex items-center gap-4 flex-wrap">
+          {/* zoom controls */}
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => setZoom((z) => Math.max(ZOOM_MIN, +(z - ZOOM_STEP).toFixed(2)))}
+              disabled={zoom <= ZOOM_MIN}
+              className="font-ui text-sm font-semibold w-7 h-7 flex items-center justify-center border border-ink/30 rounded-sm text-ink/70 disabled:opacity-30 hover:border-ink"
+              title="Zoom out"
+            >
+              −
+            </button>
+            <button
+              onClick={() => setZoom(1)}
+              className="font-mono text-xs text-ink/60 w-12 text-center hover:text-redpen"
+              title="Reset to fit width"
+            >
+              {Math.round(zoom * 100)}%
+            </button>
+            <button
+              onClick={() => setZoom((z) => Math.min(ZOOM_MAX, +(z + ZOOM_STEP).toFixed(2)))}
+              disabled={zoom >= ZOOM_MAX}
+              className="font-ui text-sm font-semibold w-7 h-7 flex items-center justify-center border border-ink/30 rounded-sm text-ink/70 disabled:opacity-30 hover:border-ink"
+              title="Zoom in"
+            >
+              +
+            </button>
+          </div>
+
+          {/* page nav */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => {
+                setOpenMistakeIdx(null);
+                setCurrentPage((p) => Math.max(1, p - 1));
+              }}
+              disabled={currentPage <= 1}
+              className="font-ui text-[11px] tracking-[0.1em] uppercase font-semibold px-3 py-1.5 border border-ink/30 rounded-sm text-ink/70 disabled:opacity-30 hover:border-ink"
+            >
+              ‹ Prev
+            </button>
+            <span className="font-mono text-xs text-ink/60">
+              Page {currentPage} / {numPages}
+            </span>
+            <button
+              onClick={() => {
+                setOpenMistakeIdx(null);
+                setCurrentPage((p) => Math.min(numPages, p + 1));
+              }}
+              disabled={currentPage >= numPages}
+              className="font-ui text-[11px] tracking-[0.1em] uppercase font-semibold px-3 py-1.5 border border-ink/30 rounded-sm text-ink/70 disabled:opacity-30 hover:border-ink"
+            >
+              Next ›
+            </button>
+          </div>
         </div>
       </div>
 
@@ -168,10 +210,10 @@ const PdfViewer = forwardRef(function PdfViewer({ documentId, mistakes, pages, v
       <div
         ref={wrapperRef}
         className="relative mx-auto overflow-auto border border-rule"
-        style={{ maxWidth: "100%" }}
+        style={{ maxWidth: "100%", maxHeight: "75vh" }}
       >
         <div
-          className="relative mx-auto"
+          className="relative"
           style={{ width: pageCssSize.width || undefined, height: pageCssSize.height || undefined }}
         >
           <canvas ref={canvasRef} className="block" />
@@ -267,6 +309,14 @@ const PdfViewer = forwardRef(function PdfViewer({ documentId, mistakes, pages, v
           })}
         </div>
       </div>
+
+      {unpinnedCount > 0 && (
+        <p className="font-ui text-[11px] text-ink/40 mt-3">
+          {pinnedMistakes} of {totalMistakes} slips are pinned on the page. {unpinnedCount} couldn't
+          be matched to an exact spot on the PDF (usually text spanning an unusual layout run) —
+          they're still listed with full detail in the Proof Sheet tab.
+        </p>
+      )}
     </div>
   );
 });

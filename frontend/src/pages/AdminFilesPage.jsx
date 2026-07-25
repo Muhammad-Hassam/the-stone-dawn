@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import axiosClient from "../api/axiosClient";
+import { engineLabel } from "../utils/engineLabels";
 
 function StatusTag({ status }) {
   const map = {
@@ -132,6 +133,10 @@ export default function AdminFilesPage() {
                   {doc.uploadedBy?.name || "Unknown"} ({doc.uploadedBy?.email || "—"}) &middot;{" "}
                   {new Date(doc.createdAt).toLocaleDateString()} &middot;{" "}
                   {doc.mistakeCount ?? 0} slip(s)
+                  {doc.status === "completed" &&
+                    ` · S:${doc.spellingCount ?? 0} G:${doc.grammarCount ?? 0} P:${doc.punctuationCount ?? 0}`}
+                  {" · "}
+                  {engineLabel(doc.checkerEngine)}
                 </p>
               </div>
               <div className="flex items-center gap-4">

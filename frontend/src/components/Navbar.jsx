@@ -17,7 +17,7 @@ export default function Navbar() {
     weekday: "long",
     year: "numeric",
     month: "long",
-    day: "numeric",
+    day: "numeric"
   });
 
   const handleLogout = () => {
@@ -29,13 +29,11 @@ export default function Navbar() {
     <header className="bg-paper paper-texture">
       <div className="max-w-5xl mx-auto px-6 pt-6">
         <div className="flex items-end justify-between">
-          <div className="font-ui text-[11px] tracking-[0.2em] uppercase text-ink/60">
-            {user && (
-              <span className="font-ui text-[11px] tracking-[0.15em] uppercase text-ink/60">
-                {user.name} &middot; {user.role}
-              </span>
-            )}
-          </div>
+          {user && (
+            <span className="font-ui text-[11px] tracking-[0.15em] uppercase text-ink/60">
+              {user.name} &middot; {user.role}
+            </span>
+          )}
           <div className="flex items-center gap-4">
             <DarkModeToggle />
             <div className="font-ui text-[11px] tracking-[0.2em] uppercase text-ink/60 hidden sm:block">
