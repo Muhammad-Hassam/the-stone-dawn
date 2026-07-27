@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 import DarkModeToggle from "../components/DarkModeToggle";
-import LogoMark from "../components/LogoMark";
+import Logo from "../../assets/logo.jpeg";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -35,23 +35,26 @@ export default function LoginPage() {
       </div>
 
       <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-3">
-            <LogoMark size={36} />
-          </div>
-          <h1 className="font-display font-bold text-3xl text-ink">
-            The Stone<span className="text-accent">.</span>
-          </h1>
-          <p className="font-serif italic text-muted text-sm mt-1">
-            Nightly Pre-Press Proof
-          </p>
-        </div>
-
         <form
           onSubmit={handleSubmit}
           className="bg-card border border-rule rounded-md p-8 space-y-5"
         >
           <div>
+            <div className="text-center mb-8">
+              <div className="flex justify-center h-16 shrink-0 border-1 ">
+                <img
+                  src={Logo}
+                  alt="Logo"
+                  className="h-full w-auto object-contain border-black border-1"
+                />
+              </div>
+              <h1 className="font-display font-bold text-3xl text-ink my-3">
+                The Stone<span className="text-accent">.</span>
+              </h1>
+              <p className="font-serif italic text-muted text-sm mt-1">
+                Nightly Pre-Press Proof
+              </p>
+            </div>
             <label className="block font-ui text-[12px] text-muted mb-1.5">
               Email
             </label>
@@ -86,10 +89,14 @@ export default function LoginPage() {
           >
             {submitting ? "Signing in…" : "Sign In"}
           </button>
-        </form>
 
-        <p className="text-center font-ui text-[12px] text-muted mt-6">
-          New staff accounts are created by an admin.
+          <p className="text-center font-ui text-[12px] text-muted mt-6">
+            Accounts are set up by the admin — if you are locked out or forgot
+            your password, ask the admin to reset it.
+          </p>
+        </form>
+        <p className="text-center font-ui text-[12px] text-muted mt-6 italic">
+          A second read before the pages go to press.
         </p>
       </div>
     </div>
