@@ -9,16 +9,15 @@ import { engineLabel } from "../utils/engineLabels";
 const TABS = [
   { key: "marked", label: "Marked PDF" },
   { key: "clean", label: "Clean Copy" },
-  { key: "proof", label: "Proof Sheet" }
+  { key: "proof", label: "Proof Sheet" },
 ];
 
 function categoryTagClass(category) {
   const c = (category || "").toUpperCase();
-  if (c.includes("SPELL") || c.includes("TYPO"))
-    return "text-redpen border-redpen";
+  if (c.includes("SPELL") || c.includes("TYPO")) return "text-redpen border-redpen";
   if (c.includes("GRAMMAR")) return "text-brass border-brass";
-  if (c.includes("PUNCT")) return "text-[#3B6E91] border-[#3B6E91]";
-  return "text-[#8A8578] border-[#8A8578]";
+  if (c.includes("PUNCT")) return "text-punct border-punct";
+  return "text-muted border-rule";
 }
 
 export default function ResultPage() {
@@ -48,20 +47,16 @@ export default function ResultPage() {
 
   if (loading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center bg-paper paper-texture">
-        <p className="font-ui text-sm tracking-widest uppercase text-ink/40">
-          Fetching from the archive…
-        </p>
+      <div className="min-h-[60vh] flex items-center justify-center bg-paper">
+        <p className="font-ui text-sm text-muted">Loading…</p>
       </div>
     );
   }
 
   if (!doc) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center bg-paper paper-texture">
-        <p className="font-serif text-ink/60">
-          This edition could not be found.
-        </p>
+      <div className="min-h-[60vh] flex items-center justify-center bg-paper">
+        <p className="font-serif text-muted">This proof could not be found.</p>
       </div>
     );
   }
@@ -70,8 +65,8 @@ export default function ResultPage() {
     doc.status === "completed"
       ? "text-greenpen"
       : doc.status === "failed"
-        ? "text-redpen"
-        : "text-brass";
+      ? "text-redpen"
+      : "text-brass";
 
   const showOnPdf = (idx) => {
     setTab("marked");
@@ -83,9 +78,7 @@ export default function ResultPage() {
     setDownloading(kind);
     try {
       const filename =
-        kind === "corrected"
-          ? `corrected-${doc.originalName}`
-          : doc.originalName;
+        kind === "corrected" ? `corrected-${doc.originalName}` : doc.originalName;
       await downloadAuthedFile(`/pdf/${doc._id}/download/${kind}`, filename);
     } catch (err) {
       toast.error(err.message);
@@ -95,36 +88,28 @@ export default function ResultPage() {
   };
 
   return (
-    <div className="min-h-screen bg-paper paper-texture">
-      <div className="max-w-4xl mx-auto px-6 pt-8 pb-24">
-        <Link
-          to="/history"
-          className="font-ui text-[11px] tracking-[0.15em] uppercase text-ink/50 hover:text-redpen"
-        >
-          &larr; Back Issues
+    <div className="min-h-screen bg-paper">
+      <div className="max-w-3xl mx-auto px-6 pt-10 pb-24">
+        <Link to="/history" className="font-ui text-[13px] text-muted hover:text-ink">
+          &larr; History
         </Link>
 
         {/* Byline block */}
         <div className="flex items-start justify-between gap-6 mt-4 mb-6 border-b border-rule pb-6">
           <div>
-            <div className="font-ui text-[11px] tracking-[0.2em] uppercase text-ink/40 mb-2">
-              Filed Copy
-            </div>
-            <h1 className="font-display text-3xl sm:text-4xl text-ink leading-tight mb-3">
+            <h1 className="font-display text-2xl sm:text-3xl text-ink leading-tight mb-2">
               {doc.originalName}
             </h1>
-            <p className="font-ui text-[12px] tracking-wide text-ink/60">
-              <span className={`font-semibold uppercase ${statusColor}`}>
-                {doc.status}
-              </span>
+            <p className="font-ui text-[13px] text-muted">
+              <span className={`font-medium ${statusColor}`}>{doc.status}</span>
               {"  ·  "}
-              {doc.mistakeCount} slip{doc.mistakeCount === 1 ? "" : "s"} caught
+              {doc.mistakeCount} slip{doc.mistakeCount === 1 ? "" : "s"}
               {doc.pageCount ? `  ·  ${doc.pageCount} page(s)` : ""}
               {"  ·  "}
               {new Date(doc.createdAt).toLocaleDateString("en-US", {
                 month: "long",
                 day: "numeric",
-                year: "numeric"
+                year: "numeric",
               })}
               {doc.uploadedBy?.name && (
                 <>
@@ -136,45 +121,28 @@ export default function ResultPage() {
 
             {doc.status === "completed" && (
               <div className="flex flex-wrap items-center gap-2 mt-3">
-                <span className="inline-block w-3 h-3 rounded-full bg-redpen" />
-                <span className="font-ui text-[10px] tracking-[0.1em] uppercase font-semibold px-2 py-0.5 border rounded-sm text-redpen border-redpen">
+                <span className="font-ui text-[11px] font-medium px-2 py-0.5 border rounded-sm text-redpen border-redpen">
                   {doc.spellingCount || 0} Spelling
                 </span>
-                <span className="inline-block w-3 h-3 rounded-full bg-brass" />
-                <span className="font-ui text-[10px] tracking-[0.1em] uppercase font-semibold px-2 py-0.5 border rounded-sm text-brass border-brass">
+                <span className="font-ui text-[11px] font-medium px-2 py-0.5 border rounded-sm text-brass border-brass">
                   {doc.grammarCount || 0} Grammar
                 </span>
-                <span className="inline-block w-3 h-3 rounded-full bg-[#3B6E91]" />
-                <span className="font-ui text-[10px] tracking-[0.1em] uppercase font-semibold px-2 py-0.5 border rounded-sm text-[#3B6E91] border-[#3B6E91]">
+                <span className="font-ui text-[11px] font-medium px-2 py-0.5 border rounded-sm text-punct border-punct">
                   {doc.punctuationCount || 0} Punctuation
                 </span>
-                <span className="font-ui text-[10px] tracking-[0.1em] uppercase text-ink/35 ml-1">
+                <span className="font-ui text-[11px] text-muted ml-1">
                   checked by {engineLabel(doc.checkerEngine)}
                 </span>
               </div>
             )}
           </div>
-
-          {doc.status === "completed" && (
-            <div
-              className="ink-stamp text-redpen shrink-0 hidden sm:flex"
-              style={{ width: 92, height: 92 }}
-            >
-              <span className="font-mono font-bold text-2xl leading-none">
-                {doc.mistakeCount}
-              </span>
-              <span className="font-ui text-[8px] tracking-[0.15em] uppercase mt-1">
-                Marks
-              </span>
-            </div>
-          )}
         </div>
 
         <div className="flex flex-wrap gap-3 mb-8">
           <button
             onClick={() => handleDownload("original")}
             disabled={downloading === "original"}
-            className="font-ui text-[12px] tracking-[0.1em] uppercase font-semibold px-5 py-2.5 rounded-sm border-2 border-ink/70 text-ink hover:bg-ink hover:text-card transition-colors disabled:opacity-50"
+            className="font-ui text-[13px] font-medium px-4 py-2 rounded-md border border-rule text-ink hover:border-ink transition-colors disabled:opacity-50"
           >
             {downloading === "original" ? "Preparing…" : "Original Scan"}
           </button>
@@ -182,32 +150,30 @@ export default function ResultPage() {
             <button
               onClick={() => handleDownload("corrected")}
               disabled={downloading === "corrected"}
-              className="font-ui text-[12px] tracking-[0.1em] uppercase font-semibold px-5 py-2.5 rounded-sm bg-redpen text-card hover:bg-[#8f2e24] transition-colors disabled:opacity-50"
+              className="font-ui text-[13px] font-medium px-4 py-2 rounded-md bg-ink text-card hover:opacity-85 transition-opacity disabled:opacity-50"
             >
-              {downloading === "corrected"
-                ? "Preparing…"
-                : "Download Clean Copy"}
+              {downloading === "corrected" ? "Preparing…" : "Download Clean Copy"}
             </button>
           )}
         </div>
 
         {doc.status === "failed" && (
-          <div className="bg-card border-l-4 border-redpen rounded-sm p-5 mb-6 font-serif text-ink/80">
+          <div className="bg-card border-l-2 border-redpen rounded-sm p-4 mb-6 font-serif text-ink/80">
             The desk couldn't finish reading this one: {doc.errorMessage}
           </div>
         )}
 
         {doc.status === "completed" && (
           <>
-            <div className="flex gap-8 mb-6 border-b border-rule">
+            <div className="flex gap-6 mb-6 border-b border-rule">
               {TABS.map((t) => (
                 <button
                   key={t.key}
                   onClick={() => setTab(t.key)}
-                  className={`font-ui text-[12px] tracking-[0.15em] uppercase font-semibold pb-3 border-b-2 -mb-px transition-colors ${
+                  className={`font-ui text-[13px] font-medium pb-3 border-b-2 -mb-px transition-colors ${
                     tab === t.key
-                      ? "border-redpen text-ink"
-                      : "border-transparent text-ink/40 hover:text-ink"
+                      ? "border-ink text-ink"
+                      : "border-transparent text-muted hover:text-ink"
                   }`}
                 >
                   {t.label}
@@ -224,37 +190,53 @@ export default function ResultPage() {
                 pages={doc.pages}
                 visible={tab === "marked"}
               />
+              <div className="flex flex-wrap gap-6 mt-4 font-ui text-[12px] text-muted">
+                <span className="flex items-center gap-2">
+                  <span className="inline-block w-2.5 h-2.5 rounded-full bg-redpen" />
+                  Spelling
+                </span>
+                <span className="flex items-center gap-2">
+                  <span className="inline-block w-2.5 h-2.5 rounded-full bg-brass" />
+                  Grammar
+                </span>
+                <span className="flex items-center gap-2">
+                  <span className="inline-block w-2.5 h-2.5 rounded-full bg-punct" />
+                  Punctuation
+                </span>
+                <span className="flex items-center gap-2">
+                  <span className="inline-block w-2.5 h-2.5 rounded-full bg-muted" />
+                  Other
+                </span>
+              </div>
             </div>
 
             {tab === "clean" && (
-              <div className="bg-card rounded-sm shadow-sm p-8 sm:p-12">
-                <div className="article-body font-serif text-[17px] text-ink/90 whitespace-pre-wrap leading-relaxed">
+              <div className="bg-card border border-rule rounded-md p-6 sm:p-10">
+                <div className="article-body font-serif text-[16px] text-ink/90 whitespace-pre-wrap leading-relaxed">
                   {doc.correctedText}
                 </div>
               </div>
             )}
 
             {tab === "proof" && (
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {doc.mistakes.length === 0 && (
-                  <div className="bg-card rounded-sm shadow-sm p-8 text-center">
-                    <p className="font-display text-xl text-greenpen">
-                      Clean copy — no slips found.
-                    </p>
+                  <div className="bg-card border border-rule rounded-md p-8 text-center">
+                    <p className="font-display text-xl text-greenpen">Clean copy — no slips found.</p>
                   </div>
                 )}
                 {doc.mistakes.map((m, idx) => (
                   <div
                     key={idx}
-                    className="bg-card rounded-sm shadow-sm p-5 flex items-start gap-4"
+                    className="bg-card border border-rule rounded-md p-4 flex items-start gap-4"
                   >
-                    <span className="font-mono text-xs text-ink/30 mt-0.5 w-6 shrink-0">
+                    <span className="font-mono text-xs text-muted mt-0.5 w-6 shrink-0">
                       {String(idx + 1).padStart(2, "0")}
                     </span>
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-1.5">
                         <span
-                          className={`font-ui text-[10px] tracking-[0.1em] uppercase font-semibold px-2 py-0.5 border rounded-sm ${categoryTagClass(
+                          className={`font-ui text-[11px] font-medium px-2 py-0.5 border rounded-sm ${categoryTagClass(
                             m.category
                           )}`}
                         >
@@ -263,7 +245,7 @@ export default function ResultPage() {
                         {m.boxes?.length > 0 && (
                           <button
                             onClick={() => showOnPdf(idx)}
-                            className="font-ui text-[10px] tracking-[0.1em] uppercase font-semibold text-ink/50 hover:text-redpen"
+                            className="font-ui text-[11px] font-medium text-accent hover:underline"
                           >
                             Show on PDF →
                           </button>
@@ -279,9 +261,7 @@ export default function ResultPage() {
                           </span>
                         )}
                       </p>
-                      <p className="font-serif text-[13px] text-ink/60">
-                        {m.message}
-                      </p>
+                      <p className="font-serif text-[13px] text-muted">{m.message}</p>
                     </div>
                   </div>
                 ))}

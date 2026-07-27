@@ -8,12 +8,12 @@ function StatusTag({ status }) {
   const map = {
     completed: "text-greenpen border-greenpen",
     processing: "text-brass border-brass",
-    pending: "text-ink/50 border-ink/30",
+    pending: "text-muted border-rule",
     failed: "text-redpen border-redpen",
   };
   return (
     <span
-      className={`font-ui text-[10px] tracking-[0.1em] uppercase font-semibold px-2 py-0.5 border rounded-sm ${
+      className={`font-ui text-[10px] uppercase font-medium px-2 py-0.5 border rounded-sm ${
         map[status] || map.pending
       }`}
     >
@@ -58,7 +58,7 @@ export default function AdminFilesPage() {
   }, []);
 
   const handleDelete = async (id) => {
-    if (!confirm("Permanently delete this file from the archive?")) return;
+    if (!confirm("Permanently delete this file?")) return;
     try {
       await axiosClient.delete(`/pdf/${id}`);
       toast.success("Deleted");
@@ -69,14 +69,9 @@ export default function AdminFilesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-paper paper-texture">
-      <div className="max-w-4xl mx-auto px-6 pt-8 pb-24">
-        <div className="mb-6 border-b-4 border-double border-ink pb-4">
-          <div className="font-ui text-[11px] tracking-[0.2em] uppercase text-redpen mb-1">
-            The Newsroom
-          </div>
-          <h1 className="font-display text-3xl text-ink">All Filed Copy</h1>
-        </div>
+    <div className="min-h-screen bg-paper">
+      <div className="max-w-3xl mx-auto px-6 pt-14 pb-24">
+        <h1 className="font-display text-3xl text-ink mb-8">All Copy</h1>
 
         <form
           onSubmit={(e) => {
@@ -89,7 +84,7 @@ export default function AdminFilesPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search filename…"
-            className="font-serif border-b-2 border-ink/30 focus:border-redpen bg-transparent px-1 py-1.5 text-sm w-56 outline-none"
+            className="font-serif border border-rule rounded-md focus:border-ink bg-card px-3 py-1.5 text-sm w-56 outline-none"
           />
           <select
             value={userId}
@@ -97,7 +92,7 @@ export default function AdminFilesPage() {
               setUserId(e.target.value);
               fetchFiles(search, e.target.value);
             }}
-            className="font-serif border-b-2 border-ink/30 focus:border-redpen bg-transparent px-1 py-1.5 text-sm outline-none"
+            className="font-serif border border-rule rounded-md focus:border-ink bg-card px-3 py-1.5 text-sm outline-none"
           >
             <option value="">All staff</option>
             {staff.map((s) => (
@@ -106,30 +101,27 @@ export default function AdminFilesPage() {
               </option>
             ))}
           </select>
-          <button className="font-ui text-[11px] tracking-[0.1em] uppercase font-semibold px-4 py-1.5 border-2 border-ink text-ink hover:bg-ink hover:text-card rounded-sm transition-colors">
+          <button className="font-ui text-[13px] font-medium px-4 py-1.5 border border-rule rounded-md text-ink hover:border-ink transition-colors">
             Filter
           </button>
         </form>
 
-        {loading && <p className="font-serif text-ink/50">Pulling files…</p>}
+        {loading && <p className="font-serif text-muted">Loading…</p>}
         {!loading && items.length === 0 && (
-          <p className="font-serif text-ink/50">No files match this filter.</p>
+          <p className="font-serif text-muted">No files match this filter.</p>
         )}
 
-        <div className="divide-y divide-rule bg-card rounded-sm shadow-sm">
+        <div className="divide-y divide-rule border border-rule rounded-md">
           {items.map((doc) => (
-            <div
-              key={doc._id}
-              className="flex flex-wrap items-center justify-between gap-3 p-5"
-            >
+            <div key={doc._id} className="flex flex-wrap items-center justify-between gap-3 p-4">
               <div>
                 <Link
                   to={`/document/${doc._id}`}
-                  className="font-display text-lg text-ink hover:text-redpen transition-colors"
+                  className="font-display text-base text-ink hover:text-accent transition-colors"
                 >
                   {doc.originalName}
                 </Link>
-                <p className="font-ui text-[11px] tracking-wide text-ink/45 mt-1">
+                <p className="font-ui text-[12px] text-muted mt-1">
                   {doc.uploadedBy?.name || "Unknown"} ({doc.uploadedBy?.email || "—"}) &middot;{" "}
                   {new Date(doc.createdAt).toLocaleDateString()} &middot;{" "}
                   {doc.mistakeCount ?? 0} slip(s)
@@ -143,13 +135,13 @@ export default function AdminFilesPage() {
                 <StatusTag status={doc.status} />
                 <Link
                   to={`/document/${doc._id}`}
-                  className="font-ui text-[11px] tracking-[0.1em] uppercase font-semibold text-ink/60 hover:text-redpen"
+                  className="font-ui text-[13px] font-medium text-accent hover:underline"
                 >
                   Open
                 </Link>
                 <button
                   onClick={() => handleDelete(doc._id)}
-                  className="font-ui text-[11px] tracking-[0.1em] uppercase font-semibold text-ink/40 hover:text-redpen"
+                  className="font-ui text-[13px] text-muted hover:text-redpen"
                 >
                   Remove
                 </button>

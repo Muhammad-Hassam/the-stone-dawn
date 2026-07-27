@@ -18,6 +18,11 @@ app.use(express.urlencoded({ extended: true }));
 // --- DB + bootstrap ---
 connectDB().then(seedAdmin);
 
+console.log(`[Config] LanguageTool: always available (no key needed)`);
+console.log(`[Config] Offline Dictionary: always available (no key needed)`);
+console.log(`[Config] Gemini (GEMINI_API_KEY): ${process.env.GEMINI_API_KEY ? "detected" : "NOT SET"}`);
+console.log(`[Config] ChatGPT (OPENAI_API_KEY): ${process.env.OPENAI_API_KEY ? "detected" : "NOT SET"}`);
+
 // --- Routes ---
 app.get("/api/health", (req, res) => res.json({ success: true, message: "API is running" }));
 app.use("/api/auth", authRoutes);

@@ -3,30 +3,34 @@
 @tailwind utilities;
 
 :root {
-  --color-paper: #EFEAE0;
-  --color-card: #FBF8F1;
-  --color-ink: #201D1A;
-  --color-rule: #C9C0AC;
+  --color-paper: #F7F6F3;
+  --color-card: #FFFFFF;
+  --color-ink: #1A1A1A;
+  --color-muted: #8A8A85;
+  --color-rule: #E5E3DE;
+  --color-accent: #6C5DD3;
   --color-redpen: #B23A2E;
   --color-greenpen: #3F6F52;
-  --color-brass: #8A6C26;
-  --color-masthead: #151312;
+  --color-brass: #A3872E;
+  --color-punct: #3B6E91;
 }
 
 .dark {
-  --color-paper: #15130F;
-  --color-card: #201C15;
-  --color-ink: #EDE6D6;
-  --color-rule: #4A4437;
+  --color-paper: #131211;
+  --color-card: #1C1B19;
+  --color-ink: #EDEBE6;
+  --color-muted: #8F8B84;
+  --color-rule: #322F2A;
+  --color-accent: #9B8CF0;
   --color-redpen: #E0665A;
   --color-greenpen: #6FBF93;
   --color-brass: #D9B65C;
-  --color-masthead: #0B0A08;
+  --color-punct: #5B9BC7;
 }
 
 html {
   background-color: var(--color-paper);
-  transition: background-color 0.2s ease;
+  transition: background-color 0.15s ease;
 }
 
 body {
@@ -34,7 +38,7 @@ body {
   color: var(--color-ink);
 }
 
-/* ---------- Proofreading marks ---------- */
+/* ---------- Proofreading marks on the actual PDF / mistake tags ---------- */
 mark.mistake-spelling,
 mark.mistake-grammar,
 mark.mistake-other {
@@ -58,72 +62,19 @@ mark.mistake-grammar {
 }
 
 mark.mistake-other {
-  text-decoration: underline dotted #6B7A86;
+  text-decoration: underline dotted var(--color-punct);
   text-decoration-thickness: 1.5px;
   text-underline-offset: 3px;
 }
 
-mark.mistake-spelling:hover,
-mark.mistake-grammar:hover,
-mark.mistake-other:hover {
-  background-color: rgba(178, 58, 46, 0.1);
-}
-
-.dark mark.mistake-spelling:hover,
-.dark mark.mistake-grammar:hover,
-.dark mark.mistake-other:hover {
-  background-color: rgba(224, 102, 90, 0.15);
-}
-
-/* ---------- Drop cap for the reading pane ---------- */
+/* ---------- Drop cap for the clean-copy reading pane ---------- */
 .article-body > p:first-of-type::first-letter {
   font-family: 'Playfair Display', serif;
   font-weight: 700;
   float: left;
-  font-size: 3.4em;
+  font-size: 3.2em;
   line-height: 0.85;
   padding-right: 0.09em;
   padding-top: 0.03em;
   color: var(--color-ink);
-}
-
-/* ---------- Editor's ink stamp (signature element) ---------- */
-.ink-stamp {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border: 2.5px solid currentColor;
-  border-radius: 50%;
-  transform: rotate(-8deg);
-  padding: 0.65rem 0.4rem;
-  position: relative;
-  opacity: 0.92;
-}
-
-.ink-stamp::before {
-  content: "";
-  position: absolute;
-  inset: 4px;
-  border: 1px solid currentColor;
-  border-radius: 50%;
-  opacity: 0.6;
-}
-
-/* ---------- Hairline paper texture ---------- */
-.paper-texture {
-  background-image: radial-gradient(circle at 1px 1px, rgba(32, 29, 26, 0.035) 1px, transparent 0);
-  background-size: 3px 3px;
-}
-
-.dark .paper-texture {
-  background-image: radial-gradient(circle at 1px 1px, rgba(237, 230, 214, 0.03) 1px, transparent 0);
-  background-size: 3px 3px;
-}
-
-/* ---------- Masthead rule ---------- */
-.masthead-rule {
-  border-top: 3px solid var(--color-ink);
-  border-bottom: 1px solid var(--color-ink);
-  height: 5px;
 }

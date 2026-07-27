@@ -1,8 +1,8 @@
 const axios = require("axios");
 const { chunkText, normalizeCategory } = require("./textChunker");
 
-const LT_API = process.env.LANGUAGETOOL_API;
-const LT_LANG = process.env.LANGUAGETOOL_LANG;
+const LT_API = process.env.LANGUAGETOOL_API || "https://api.languagetool.org/v2/check";
+const LT_LANG = process.env.LANGUAGETOOL_LANG || "en-US";
 
 // LanguageTool public API works best with chunks under ~15,000 chars per request
 const CHUNK_SIZE = 12000;
@@ -17,7 +17,7 @@ async function checkChunk(chunkStr, chunkOffset) {
 
   const { data } = await axios.post(LT_API, params, {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    timeout: 30000
+    timeout: 30000,
   });
 
   const matches = data.matches || [];
@@ -26,12 +26,8 @@ async function checkChunk(chunkStr, chunkOffset) {
     const offset = m.offset + chunkOffset;
     const length = m.length;
     const originalText = chunkStr.substr(m.offset, m.length);
-    const suggestions = (m.replacements || [])
-      .slice(0, 5)
-      .map((r) => r.value)
-      .filter(Boolean);
-    const rawCategory =
-      m.rule && m.rule.category ? m.rule.category.id : "OTHER";
+    const suggestions = (m.replacements || []).slice(0, 5).map((r) => r.value).filter(Boolean);
+    const rawCategory = m.rule && m.rule.category ? m.rule.category.id : "OTHER";
 
     return {
       message: m.message,
@@ -42,7 +38,7 @@ async function checkChunk(chunkStr, chunkOffset) {
       suggestions,
       appliedSuggestion: suggestions[0] || "",
       ruleId: m.rule ? m.rule.id : "",
-      category: normalizeCategory(rawCategory)
+      category: normalizeCategory(rawCategory),
     };
   });
 }

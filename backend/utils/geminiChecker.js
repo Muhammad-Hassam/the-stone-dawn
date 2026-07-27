@@ -1,10 +1,7 @@
 const axios = require("axios");
-const {
-  checkTextWithLLM,
-  buildProofreadingPrompt
-} = require("./llmGrammarChecker");
+const { checkTextWithLLM, buildProofreadingPrompt } = require("./llmGrammarChecker");
 
-const GEMINI_MODEL = process.env.GEMINI_MODEL.trim();
+const GEMINI_MODEL = (process.env.GEMINI_MODEL || "gemini-2.0-flash").trim();
 const GEMINI_API_KEY = (process.env.GEMINI_API_KEY || "").trim();
 
 if (GEMINI_API_KEY && !/^AIza[0-9A-Za-z_-]{35}$/.test(GEMINI_API_KEY)) {
@@ -30,10 +27,7 @@ async function callGemini(chunk) {
       url,
       {
         contents: [{ parts: [{ text: buildProofreadingPrompt(chunk) }] }],
-        generationConfig: {
-          responseMimeType: "application/json",
-          temperature: 0.1
-        }
+        generationConfig: { responseMimeType: "application/json", temperature: 0.1 },
       },
       { headers: { "Content-Type": "application/json" }, timeout: 60000 }
     );
@@ -45,10 +39,7 @@ async function callGemini(chunk) {
     // up in the document's errorMessage, so it needs to be useful.
     const status = err.response?.status;
     const googleMessage = err.response?.data?.error?.message;
-    console.error(
-      `[geminiChecker] request failed (status ${status || "?"}):`,
-      googleMessage || err.message
-    );
+    console.error(`[geminiChecker] request failed (status ${status || "?"}):`, googleMessage || err.message);
     throw new Error(
       googleMessage
         ? `Gemini API error (${status}): ${googleMessage}`
@@ -58,10 +49,7 @@ async function callGemini(chunk) {
 
   if (!data?.candidates?.length) {
     const blockReason = data?.promptFeedback?.blockReason;
-    console.error(
-      "[geminiChecker] Gemini returned no candidates:",
-      JSON.stringify(data)
-    );
+    console.error("[geminiChecker] Gemini returned no candidates:", JSON.stringify(data));
     if (blockReason) {
       throw new Error(
         `Gemini declined to process this content (${blockReason}). Try a different checker for this file instead.`

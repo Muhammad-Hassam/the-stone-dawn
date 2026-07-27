@@ -50,7 +50,7 @@ async function checkTextOffline(fullText) {
       suggestions,
       appliedSuggestion: suggestions[0] || "",
       ruleId: "offline-hunspell",
-      category: "SPELLING"
+      category: "SPELLING",
     });
   }
 

@@ -5,9 +5,9 @@ import axiosClient from "../api/axiosClient";
 
 function StatCard({ label, value, accent }) {
   return (
-    <div className="bg-card rounded-sm shadow-sm p-6 border-l-4" style={{ borderColor: accent }}>
-      <p className="font-ui text-[11px] tracking-[0.15em] uppercase text-ink/50 mb-2">{label}</p>
-      <p className="font-display text-4xl text-ink">{value}</p>
+    <div className="bg-card border border-rule rounded-md p-5 border-l-2" style={{ borderLeftColor: accent }}>
+      <p className="font-ui text-[11px] text-muted mb-2">{label}</p>
+      <p className="font-display text-3xl text-ink">{value}</p>
     </div>
   );
 }
@@ -30,16 +30,11 @@ export default function AdminOverviewPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-paper paper-texture">
-      <div className="max-w-4xl mx-auto px-6 pt-8 pb-24">
-        <div className="mb-8 border-b-4 border-double border-ink pb-4">
-          <div className="font-ui text-[11px] tracking-[0.2em] uppercase text-redpen mb-1">
-            The Newsroom
-          </div>
-          <h1 className="font-display text-3xl text-ink">Editor's Overview</h1>
-        </div>
+    <div className="min-h-screen bg-paper">
+      <div className="max-w-3xl mx-auto px-6 pt-14 pb-24">
+        <h1 className="font-display text-3xl text-ink mb-8">Usage</h1>
 
-        {loading && <p className="font-serif text-ink/50">Pulling the day's numbers…</p>}
+        {loading && <p className="font-serif text-muted">Loading…</p>}
 
         {stats && (
           <>
@@ -51,37 +46,35 @@ export default function AdminOverviewPage() {
                 value={stats.totalMistakesCaught}
                 accent="var(--color-greenpen)"
               />
-              <StatCard label="Failed Runs" value={stats.failedDocs} accent="#6B7A86" />
+              <StatCard label="Failed Runs" value={stats.failedDocs} accent="var(--color-muted)" />
             </div>
 
             <div className="grid grid-cols-3 gap-4 mb-10">
               <StatCard label="Spelling" value={stats.totalSpelling} accent="var(--color-redpen)" />
               <StatCard label="Grammar" value={stats.totalGrammar} accent="var(--color-brass)" />
-              <StatCard label="Punctuation" value={stats.totalPunctuation} accent="#3B6E91" />
+              <StatCard label="Punctuation" value={stats.totalPunctuation} accent="var(--color-punct)" />
             </div>
 
-            <h2 className="font-display text-2xl text-ink mb-4">Latest Filed Copy</h2>
-            <div className="divide-y divide-rule bg-card rounded-sm shadow-sm">
+            <h2 className="font-display text-xl text-ink mb-4">Latest Filed Copy</h2>
+            <div className="divide-y divide-rule border border-rule rounded-md">
               {stats.recentDocs.length === 0 && (
-                <p className="font-serif text-ink/50 p-6">Nothing filed yet.</p>
+                <p className="font-serif text-muted p-6">Nothing filed yet.</p>
               )}
               {stats.recentDocs.map((doc) => (
                 <Link
                   key={doc._id}
                   to={`/document/${doc._id}`}
-                  className="flex items-center justify-between gap-4 p-5 hover:bg-paper/50 transition-colors"
+                  className="flex items-center justify-between gap-4 p-4 hover:bg-paper transition-colors"
                 >
                   <div>
-                    <p className="font-display text-lg text-ink">{doc.originalName}</p>
-                    <p className="font-ui text-[11px] tracking-wide text-ink/45 mt-1">
+                    <p className="font-display text-base text-ink">{doc.originalName}</p>
+                    <p className="font-ui text-[12px] text-muted mt-1">
                       {doc.uploadedBy?.name || "Unknown"} &middot;{" "}
                       {new Date(doc.createdAt).toLocaleDateString()} &middot; {doc.mistakeCount}{" "}
                       slip(s)
                     </p>
                   </div>
-                  <span className="font-ui text-[10px] uppercase tracking-wide text-ink/40">
-                    {doc.status}
-                  </span>
+                  <span className="font-ui text-[11px] text-muted">{doc.status}</span>
                 </Link>
               ))}
             </div>

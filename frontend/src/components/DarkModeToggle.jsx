@@ -17,10 +17,10 @@ export default function DarkModeToggle() {
   return (
     <button
       onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
-      className="font-ui text-[10px] tracking-[0.15em] uppercase font-semibold px-3 py-1.5 border border-ink/30 rounded-sm text-ink/60 hover:text-ink hover:border-ink transition-colors"
-      title="Toggle day/night edition"
+      className="font-ui text-[13px] text-muted hover:text-ink transition-colors"
+      title="Toggle dark mode"
     >
-      {theme === "dark" ? "Night Edition" : "Day Edition"}
+      {theme === "dark" ? "Light" : "Dark"}
     </button>
   );
 }

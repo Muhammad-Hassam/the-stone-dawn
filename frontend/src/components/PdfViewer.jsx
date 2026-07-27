@@ -19,8 +19,8 @@ function categoryColor(category) {
   const c = (category || "").toUpperCase();
   if (c.includes("SPELL") || c.includes("TYPO")) return "var(--color-redpen)";
   if (c.includes("GRAMMAR")) return "var(--color-brass)";
-  if (c.includes("PUNCT")) return "#3B6E91";
-  return "#8A8578";
+  if (c.includes("PUNCT")) return "var(--color-punct)";
+  return "var(--color-muted)";
 }
 
 const ZOOM_MIN = 0.5;
@@ -139,9 +139,9 @@ const PdfViewer = forwardRef(function PdfViewer({ documentId, mistakes, pages, v
   useImperativeHandle(ref, () => ({ goToMistake }));
 
   return (
-    <div ref={containerRef} className="bg-card rounded-sm shadow-sm p-4 sm:p-6">
+    <div ref={containerRef} className="bg-card border border-rule rounded-md p-4 sm:p-6">
       <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
-        <div className="font-ui text-[11px] tracking-[0.15em] uppercase text-ink/50">
+        <div className="font-ui text-[12px] text-muted">
           {mistakesOnPage.length} slip{mistakesOnPage.length === 1 ? "" : "s"} on this page
         </div>
 
@@ -151,14 +151,14 @@ const PdfViewer = forwardRef(function PdfViewer({ documentId, mistakes, pages, v
             <button
               onClick={() => setZoom((z) => Math.max(ZOOM_MIN, +(z - ZOOM_STEP).toFixed(2)))}
               disabled={zoom <= ZOOM_MIN}
-              className="font-ui text-sm font-semibold w-7 h-7 flex items-center justify-center border border-ink/30 rounded-sm text-ink/70 disabled:opacity-30 hover:border-ink"
+              className="font-ui text-sm font-medium w-7 h-7 flex items-center justify-center border border-rule rounded-sm text-ink disabled:opacity-30 hover:border-ink"
               title="Zoom out"
             >
               −
             </button>
             <button
               onClick={() => setZoom(1)}
-              className="font-mono text-xs text-ink/60 w-12 text-center hover:text-redpen"
+              className="font-mono text-xs text-muted w-12 text-center hover:text-ink"
               title="Reset to fit width"
             >
               {Math.round(zoom * 100)}%
@@ -166,7 +166,7 @@ const PdfViewer = forwardRef(function PdfViewer({ documentId, mistakes, pages, v
             <button
               onClick={() => setZoom((z) => Math.min(ZOOM_MAX, +(z + ZOOM_STEP).toFixed(2)))}
               disabled={zoom >= ZOOM_MAX}
-              className="font-ui text-sm font-semibold w-7 h-7 flex items-center justify-center border border-ink/30 rounded-sm text-ink/70 disabled:opacity-30 hover:border-ink"
+              className="font-ui text-sm font-medium w-7 h-7 flex items-center justify-center border border-rule rounded-sm text-ink disabled:opacity-30 hover:border-ink"
               title="Zoom in"
             >
               +
@@ -181,11 +181,11 @@ const PdfViewer = forwardRef(function PdfViewer({ documentId, mistakes, pages, v
                 setCurrentPage((p) => Math.max(1, p - 1));
               }}
               disabled={currentPage <= 1}
-              className="font-ui text-[11px] tracking-[0.1em] uppercase font-semibold px-3 py-1.5 border border-ink/30 rounded-sm text-ink/70 disabled:opacity-30 hover:border-ink"
+              className="font-ui text-[12px] font-medium px-3 py-1.5 border border-rule rounded-sm text-ink disabled:opacity-30 hover:border-ink"
             >
               ‹ Prev
             </button>
-            <span className="font-mono text-xs text-ink/60">
+            <span className="font-mono text-xs text-muted">
               Page {currentPage} / {numPages}
             </span>
             <button
@@ -194,7 +194,7 @@ const PdfViewer = forwardRef(function PdfViewer({ documentId, mistakes, pages, v
                 setCurrentPage((p) => Math.min(numPages, p + 1));
               }}
               disabled={currentPage >= numPages}
-              className="font-ui text-[11px] tracking-[0.1em] uppercase font-semibold px-3 py-1.5 border border-ink/30 rounded-sm text-ink/70 disabled:opacity-30 hover:border-ink"
+              className="font-ui text-[12px] font-medium px-3 py-1.5 border border-rule rounded-sm text-ink disabled:opacity-30 hover:border-ink"
             >
               Next ›
             </button>
@@ -204,7 +204,7 @@ const PdfViewer = forwardRef(function PdfViewer({ documentId, mistakes, pages, v
 
       {error && <p className="font-serif text-redpen">{error}</p>}
       {loading && !error && (
-        <p className="font-serif text-ink/50 py-10 text-center">Opening the original file…</p>
+        <p className="font-serif text-muted py-10 text-center">Opening the original file…</p>
       )}
 
       <div
@@ -282,7 +282,7 @@ const PdfViewer = forwardRef(function PdfViewer({ documentId, mistakes, pages, v
                     }}
                   >
                     <span
-                      className="font-ui text-[10px] tracking-[0.1em] uppercase font-semibold px-2 py-0.5 border rounded-sm"
+                      className="font-ui text-[11px] font-medium px-2 py-0.5 border rounded-sm"
                       style={{ color, borderColor: color }}
                     >
                       {m.category || "OTHER"}
@@ -311,7 +311,7 @@ const PdfViewer = forwardRef(function PdfViewer({ documentId, mistakes, pages, v
       </div>
 
       {unpinnedCount > 0 && (
-        <p className="font-ui text-[11px] text-ink/40 mt-3">
+        <p className="font-ui text-[12px] text-muted mt-3">
           {pinnedMistakes} of {totalMistakes} slips are pinned on the page. {unpinnedCount} couldn't
           be matched to an exact spot on the PDF (usually text spanning an unusual layout run) —
           they're still listed with full detail in the Proof Sheet tab.

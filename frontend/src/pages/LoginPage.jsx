@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 import DarkModeToggle from "../components/DarkModeToggle";
+import LogoMark from "../components/LogoMark";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -17,7 +18,7 @@ export default function LoginPage() {
     setSubmitting(true);
     try {
       await login(email, password);
-      toast.success("Welcome back to the desk");
+      toast.success("Welcome back");
       const redirectTo = location.state?.from?.pathname || "/";
       navigate(redirectTo, { replace: true });
     } catch (err) {
@@ -28,31 +29,30 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-paper paper-texture flex items-center justify-center px-6">
+    <div className="min-h-screen bg-paper flex items-center justify-center px-6">
       <div className="absolute top-6 right-6">
         <DarkModeToggle />
       </div>
 
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <div className="font-ui text-[11px] tracking-[0.25em] uppercase text-redpen mb-2">
-            Staff Sign-In
+          <div className="flex justify-center mb-3">
+            <LogoMark size={36} />
           </div>
-          <h1 className="font-display font-black text-4xl text-ink">
-            The Stone
+          <h1 className="font-display font-bold text-3xl text-ink">
+            The Stone<span className="text-accent">.</span>
           </h1>
-          <div className="masthead-rule my-4" />
-          <p className="font-serif text-ink/60 text-sm">
-            Sign in to submit copy or run the newsroom.
+          <p className="font-serif italic text-muted text-sm mt-1">
+            Nightly Pre-Press Proof
           </p>
         </div>
 
         <form
           onSubmit={handleSubmit}
-          className="bg-card rounded-sm shadow-sm p-8 space-y-5"
+          className="bg-card border border-rule rounded-md p-8 space-y-5"
         >
           <div>
-            <label className="block font-ui text-[11px] tracking-[0.1em] uppercase text-ink/50 mb-1.5">
+            <label className="block font-ui text-[12px] text-muted mb-1.5">
               Email
             </label>
             <input
@@ -60,13 +60,13 @@ export default function LoginPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full font-serif border-b-2 border-ink/20 focus:border-redpen bg-transparent px-1 py-2 outline-none text-ink"
-              placeholder="you@newsroom.com"
+              className="w-full font-serif border border-rule rounded-md focus:border-ink bg-paper px-3 py-2 outline-none text-ink"
+              placeholder="you@example.com"
             />
           </div>
 
           <div>
-            <label className="block font-ui text-[11px] tracking-[0.1em] uppercase text-ink/50 mb-1.5">
+            <label className="block font-ui text-[12px] text-muted mb-1.5">
               Password
             </label>
             <input
@@ -74,7 +74,7 @@ export default function LoginPage() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full font-serif border-b-2 border-ink/20 focus:border-redpen bg-transparent px-1 py-2 outline-none text-ink"
+              className="w-full font-serif border border-rule rounded-md focus:border-ink bg-paper px-3 py-2 outline-none text-ink"
               placeholder="••••••••"
             />
           </div>
@@ -82,14 +82,14 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full font-ui text-sm tracking-[0.15em] uppercase font-semibold bg-redpen hover:bg-[#8f2e24] disabled:opacity-50 text-card py-3 rounded-sm transition-colors"
+            className="w-full font-ui text-sm font-medium bg-ink text-card py-2.5 rounded-md hover:opacity-85 disabled:opacity-50 transition-opacity"
           >
             {submitting ? "Signing in…" : "Sign In"}
           </button>
         </form>
 
-        <p className="text-center font-ui text-[11px] text-ink/40 mt-6">
-          New staff accounts are created by an admin from the Newsroom panel.
+        <p className="text-center font-ui text-[12px] text-muted mt-6">
+          New staff accounts are created by an admin.
         </p>
       </div>
     </div>
