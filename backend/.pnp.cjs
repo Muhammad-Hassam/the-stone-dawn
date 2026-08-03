@@ -34,11 +34,11 @@ const RAW_RUNTIME_STATE =
           ["dotenv", "npm:16.6.1"],\
           ["express", "npm:4.22.2"],\
           ["jsonwebtoken", "npm:9.0.3"],\
-          ["mongoose", "npm:8.24.1"],\
+          ["mongoose", "npm:8.24.2"],\
           ["multer", "npm:1.4.5-lts.2"],\
           ["nodemon", "npm:3.1.14"],\
           ["nspell", "npm:2.1.5"],\
-          ["pdfjs-dist", "npm:6.1.200"],\
+          ["pdfjs-dist", "npm:6.2.108"],\
           ["pdfkit", "npm:0.15.2"],\
           ["uuid", "npm:9.0.1"]\
         ],\
@@ -66,120 +66,120 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["@napi-rs/canvas", [\
-      ["npm:1.0.2", {\
-        "packageLocation": "../../../.yarn/berry/cache/@napi-rs-canvas-npm-1.0.2-f5fa8520a3-10c0.zip/node_modules/@napi-rs/canvas/",\
+      ["npm:1.0.3", {\
+        "packageLocation": "../../../.yarn/berry/cache/@napi-rs-canvas-npm-1.0.3-d5ff37c212-10c0.zip/node_modules/@napi-rs/canvas/",\
         "packageDependencies": [\
-          ["@napi-rs/canvas", "npm:1.0.2"],\
-          ["@napi-rs/canvas-android-arm64", "npm:1.0.2"],\
-          ["@napi-rs/canvas-darwin-arm64", "npm:1.0.2"],\
-          ["@napi-rs/canvas-darwin-x64", "npm:1.0.2"],\
-          ["@napi-rs/canvas-linux-arm-gnueabihf", "npm:1.0.2"],\
-          ["@napi-rs/canvas-linux-arm64-gnu", "npm:1.0.2"],\
-          ["@napi-rs/canvas-linux-arm64-musl", "npm:1.0.2"],\
-          ["@napi-rs/canvas-linux-riscv64-gnu", "npm:1.0.2"],\
-          ["@napi-rs/canvas-linux-x64-gnu", "npm:1.0.2"],\
-          ["@napi-rs/canvas-linux-x64-musl", "npm:1.0.2"],\
-          ["@napi-rs/canvas-win32-arm64-msvc", "npm:1.0.2"],\
-          ["@napi-rs/canvas-win32-x64-msvc", "npm:1.0.2"]\
+          ["@napi-rs/canvas", "npm:1.0.3"],\
+          ["@napi-rs/canvas-android-arm64", "npm:1.0.3"],\
+          ["@napi-rs/canvas-darwin-arm64", "npm:1.0.3"],\
+          ["@napi-rs/canvas-darwin-x64", "npm:1.0.3"],\
+          ["@napi-rs/canvas-linux-arm-gnueabihf", "npm:1.0.3"],\
+          ["@napi-rs/canvas-linux-arm64-gnu", "npm:1.0.3"],\
+          ["@napi-rs/canvas-linux-arm64-musl", "npm:1.0.3"],\
+          ["@napi-rs/canvas-linux-riscv64-gnu", "npm:1.0.3"],\
+          ["@napi-rs/canvas-linux-x64-gnu", "npm:1.0.3"],\
+          ["@napi-rs/canvas-linux-x64-musl", "npm:1.0.3"],\
+          ["@napi-rs/canvas-win32-arm64-msvc", "npm:1.0.3"],\
+          ["@napi-rs/canvas-win32-x64-msvc", "npm:1.0.3"]\
         ],\
         "linkType": "HARD"\
       }]\
     ]],\
     ["@napi-rs/canvas-android-arm64", [\
-      ["npm:1.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@napi-rs-canvas-android-arm64-npm-1.0.2-aa2c30132c/node_modules/@napi-rs/canvas-android-arm64/",\
+      ["npm:1.0.3", {\
+        "packageLocation": "./.yarn/unplugged/@napi-rs-canvas-android-arm64-npm-1.0.3-6a6335eba8/node_modules/@napi-rs/canvas-android-arm64/",\
         "packageDependencies": [\
-          ["@napi-rs/canvas-android-arm64", "npm:1.0.2"]\
+          ["@napi-rs/canvas-android-arm64", "npm:1.0.3"]\
         ],\
         "linkType": "HARD"\
       }]\
     ]],\
     ["@napi-rs/canvas-darwin-arm64", [\
-      ["npm:1.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@napi-rs-canvas-darwin-arm64-npm-1.0.2-4ce41f5554/node_modules/@napi-rs/canvas-darwin-arm64/",\
+      ["npm:1.0.3", {\
+        "packageLocation": "./.yarn/unplugged/@napi-rs-canvas-darwin-arm64-npm-1.0.3-c33cd5d9eb/node_modules/@napi-rs/canvas-darwin-arm64/",\
         "packageDependencies": [\
-          ["@napi-rs/canvas-darwin-arm64", "npm:1.0.2"]\
+          ["@napi-rs/canvas-darwin-arm64", "npm:1.0.3"]\
         ],\
         "linkType": "HARD"\
       }]\
     ]],\
     ["@napi-rs/canvas-darwin-x64", [\
-      ["npm:1.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@napi-rs-canvas-darwin-x64-npm-1.0.2-7cb099098b/node_modules/@napi-rs/canvas-darwin-x64/",\
+      ["npm:1.0.3", {\
+        "packageLocation": "./.yarn/unplugged/@napi-rs-canvas-darwin-x64-npm-1.0.3-34eab2a13f/node_modules/@napi-rs/canvas-darwin-x64/",\
         "packageDependencies": [\
-          ["@napi-rs/canvas-darwin-x64", "npm:1.0.2"]\
+          ["@napi-rs/canvas-darwin-x64", "npm:1.0.3"]\
         ],\
         "linkType": "HARD"\
       }]\
     ]],\
     ["@napi-rs/canvas-linux-arm-gnueabihf", [\
-      ["npm:1.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@napi-rs-canvas-linux-arm-gnueabihf-npm-1.0.2-51b5b3074e/node_modules/@napi-rs/canvas-linux-arm-gnueabihf/",\
+      ["npm:1.0.3", {\
+        "packageLocation": "./.yarn/unplugged/@napi-rs-canvas-linux-arm-gnueabihf-npm-1.0.3-093ade1697/node_modules/@napi-rs/canvas-linux-arm-gnueabihf/",\
         "packageDependencies": [\
-          ["@napi-rs/canvas-linux-arm-gnueabihf", "npm:1.0.2"]\
+          ["@napi-rs/canvas-linux-arm-gnueabihf", "npm:1.0.3"]\
         ],\
         "linkType": "HARD"\
       }]\
     ]],\
     ["@napi-rs/canvas-linux-arm64-gnu", [\
-      ["npm:1.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@napi-rs-canvas-linux-arm64-gnu-npm-1.0.2-f0059fb752/node_modules/@napi-rs/canvas-linux-arm64-gnu/",\
+      ["npm:1.0.3", {\
+        "packageLocation": "./.yarn/unplugged/@napi-rs-canvas-linux-arm64-gnu-npm-1.0.3-0a2c7d2c94/node_modules/@napi-rs/canvas-linux-arm64-gnu/",\
         "packageDependencies": [\
-          ["@napi-rs/canvas-linux-arm64-gnu", "npm:1.0.2"]\
+          ["@napi-rs/canvas-linux-arm64-gnu", "npm:1.0.3"]\
         ],\
         "linkType": "HARD"\
       }]\
     ]],\
     ["@napi-rs/canvas-linux-arm64-musl", [\
-      ["npm:1.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@napi-rs-canvas-linux-arm64-musl-npm-1.0.2-b03cc62cda/node_modules/@napi-rs/canvas-linux-arm64-musl/",\
+      ["npm:1.0.3", {\
+        "packageLocation": "./.yarn/unplugged/@napi-rs-canvas-linux-arm64-musl-npm-1.0.3-f3639fc50e/node_modules/@napi-rs/canvas-linux-arm64-musl/",\
         "packageDependencies": [\
-          ["@napi-rs/canvas-linux-arm64-musl", "npm:1.0.2"]\
+          ["@napi-rs/canvas-linux-arm64-musl", "npm:1.0.3"]\
         ],\
         "linkType": "HARD"\
       }]\
     ]],\
     ["@napi-rs/canvas-linux-riscv64-gnu", [\
-      ["npm:1.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@napi-rs-canvas-linux-riscv64-gnu-npm-1.0.2-3a46f927b5/node_modules/@napi-rs/canvas-linux-riscv64-gnu/",\
+      ["npm:1.0.3", {\
+        "packageLocation": "./.yarn/unplugged/@napi-rs-canvas-linux-riscv64-gnu-npm-1.0.3-ed40f95a34/node_modules/@napi-rs/canvas-linux-riscv64-gnu/",\
         "packageDependencies": [\
-          ["@napi-rs/canvas-linux-riscv64-gnu", "npm:1.0.2"]\
+          ["@napi-rs/canvas-linux-riscv64-gnu", "npm:1.0.3"]\
         ],\
         "linkType": "HARD"\
       }]\
     ]],\
     ["@napi-rs/canvas-linux-x64-gnu", [\
-      ["npm:1.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@napi-rs-canvas-linux-x64-gnu-npm-1.0.2-2e2a7bf83f/node_modules/@napi-rs/canvas-linux-x64-gnu/",\
+      ["npm:1.0.3", {\
+        "packageLocation": "./.yarn/unplugged/@napi-rs-canvas-linux-x64-gnu-npm-1.0.3-6021996ca8/node_modules/@napi-rs/canvas-linux-x64-gnu/",\
         "packageDependencies": [\
-          ["@napi-rs/canvas-linux-x64-gnu", "npm:1.0.2"]\
+          ["@napi-rs/canvas-linux-x64-gnu", "npm:1.0.3"]\
         ],\
         "linkType": "HARD"\
       }]\
     ]],\
     ["@napi-rs/canvas-linux-x64-musl", [\
-      ["npm:1.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@napi-rs-canvas-linux-x64-musl-npm-1.0.2-8bf2f964b0/node_modules/@napi-rs/canvas-linux-x64-musl/",\
+      ["npm:1.0.3", {\
+        "packageLocation": "./.yarn/unplugged/@napi-rs-canvas-linux-x64-musl-npm-1.0.3-78053eae91/node_modules/@napi-rs/canvas-linux-x64-musl/",\
         "packageDependencies": [\
-          ["@napi-rs/canvas-linux-x64-musl", "npm:1.0.2"]\
+          ["@napi-rs/canvas-linux-x64-musl", "npm:1.0.3"]\
         ],\
         "linkType": "HARD"\
       }]\
     ]],\
     ["@napi-rs/canvas-win32-arm64-msvc", [\
-      ["npm:1.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@napi-rs-canvas-win32-arm64-msvc-npm-1.0.2-127471fd54/node_modules/@napi-rs/canvas-win32-arm64-msvc/",\
+      ["npm:1.0.3", {\
+        "packageLocation": "./.yarn/unplugged/@napi-rs-canvas-win32-arm64-msvc-npm-1.0.3-6c5520a49f/node_modules/@napi-rs/canvas-win32-arm64-msvc/",\
         "packageDependencies": [\
-          ["@napi-rs/canvas-win32-arm64-msvc", "npm:1.0.2"]\
+          ["@napi-rs/canvas-win32-arm64-msvc", "npm:1.0.3"]\
         ],\
         "linkType": "HARD"\
       }]\
     ]],\
     ["@napi-rs/canvas-win32-x64-msvc", [\
-      ["npm:1.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@napi-rs-canvas-win32-x64-msvc-npm-1.0.2-dbc6cb63df/node_modules/@napi-rs/canvas-win32-x64-msvc/",\
+      ["npm:1.0.3", {\
+        "packageLocation": "./.yarn/unplugged/@napi-rs-canvas-win32-x64-msvc-npm-1.0.3-a8234f2bc2/node_modules/@napi-rs/canvas-win32-x64-msvc/",\
         "packageDependencies": [\
-          ["@napi-rs/canvas-win32-x64-msvc", "npm:1.0.2"]\
+          ["@napi-rs/canvas-win32-x64-msvc", "npm:1.0.3"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -1778,10 +1778,10 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["minimatch", [\
-      ["npm:10.2.5", {\
-        "packageLocation": "../../../.yarn/berry/cache/minimatch-npm-10.2.5-f1c8297822-10c0.zip/node_modules/minimatch/",\
+      ["npm:10.2.6", {\
+        "packageLocation": "../../../.yarn/berry/cache/minimatch-npm-10.2.6-fd0d1cf467-10c0.zip/node_modules/minimatch/",\
         "packageDependencies": [\
-          ["minimatch", "npm:10.2.5"],\
+          ["minimatch", "npm:10.2.6"],\
           ["brace-expansion", "npm:5.0.8"]\
         ],\
         "linkType": "HARD"\
@@ -1833,10 +1833,10 @@ const RAW_RUNTIME_STATE =
         ],\
         "linkType": "SOFT"\
       }],\
-      ["virtual:605451cbfc61f8ad0030545d8aa4511f4a861f1d39679f8e326645a5584ef37c36e4f7cc71f2db1be99786b79432be9d237229e58cb8d6aecb4a40071a9f2f80#npm:6.20.0", {\
-        "packageLocation": "./.yarn/__virtual__/mongodb-virtual-0c031f28b9/4/.yarn/berry/cache/mongodb-npm-6.20.0-5d66340ebb-10c0.zip/node_modules/mongodb/",\
+      ["virtual:1c6cf741c6cb14c9c0ff4e35144c98a524c6bc4d97cbb879f1ba11a9b542760ff6db91ac9cb96247b89c725ffe40a293715bbc86511d934fb0afcbcaaf7ed961#npm:6.20.0", {\
+        "packageLocation": "./.yarn/__virtual__/mongodb-virtual-e5ff78cac0/4/.yarn/berry/cache/mongodb-npm-6.20.0-5d66340ebb-10c0.zip/node_modules/mongodb/",\
         "packageDependencies": [\
-          ["mongodb", "virtual:605451cbfc61f8ad0030545d8aa4511f4a861f1d39679f8e326645a5584ef37c36e4f7cc71f2db1be99786b79432be9d237229e58cb8d6aecb4a40071a9f2f80#npm:6.20.0"],\
+          ["mongodb", "virtual:1c6cf741c6cb14c9c0ff4e35144c98a524c6bc4d97cbb879f1ba11a9b542760ff6db91ac9cb96247b89c725ffe40a293715bbc86511d934fb0afcbcaaf7ed961#npm:6.20.0"],\
           ["@aws-sdk/credential-providers", null],\
           ["@mongodb-js/saslprep", "npm:1.4.13"],\
           ["@mongodb-js/zstd", null],\
@@ -1886,13 +1886,13 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["mongoose", [\
-      ["npm:8.24.1", {\
-        "packageLocation": "../../../.yarn/berry/cache/mongoose-npm-8.24.1-605451cbfc-10c0.zip/node_modules/mongoose/",\
+      ["npm:8.24.2", {\
+        "packageLocation": "../../../.yarn/berry/cache/mongoose-npm-8.24.2-1c6cf741c6-10c0.zip/node_modules/mongoose/",\
         "packageDependencies": [\
-          ["mongoose", "npm:8.24.1"],\
+          ["mongoose", "npm:8.24.2"],\
           ["bson", "npm:6.10.4"],\
           ["kareem", "npm:2.6.3"],\
-          ["mongodb", "virtual:605451cbfc61f8ad0030545d8aa4511f4a861f1d39679f8e326645a5584ef37c36e4f7cc71f2db1be99786b79432be9d237229e58cb8d6aecb4a40071a9f2f80#npm:6.20.0"],\
+          ["mongodb", "virtual:1c6cf741c6cb14c9c0ff4e35144c98a524c6bc4d97cbb879f1ba11a9b542760ff6db91ac9cb96247b89c725ffe40a293715bbc86511d934fb0afcbcaaf7ed961#npm:6.20.0"],\
           ["mpath", "npm:0.9.0"],\
           ["mquery", "npm:5.0.0"],\
           ["ms", "npm:2.1.3"],\
@@ -1988,7 +1988,7 @@ const RAW_RUNTIME_STATE =
           ["chokidar", "npm:3.6.0"],\
           ["debug", "virtual:58ccc9ac245a39eeec160ecda6f112d7ef0ddf9c7f8cfea2e2aceaea55ec9940ab3f8b3bf1e3152f49bc6f7b9ed1ecde5638b22c54edf74c709936ced24c14f4#npm:4.4.3"],\
           ["ignore-by-default", "npm:1.0.1"],\
-          ["minimatch", "npm:10.2.5"],\
+          ["minimatch", "npm:10.2.6"],\
           ["pstree.remy", "npm:1.1.8"],\
           ["semver", "npm:7.8.5"],\
           ["simple-update-notifier", "npm:2.0.0"],\
@@ -2137,11 +2137,11 @@ const RAW_RUNTIME_STATE =
           ["dotenv", "npm:16.6.1"],\
           ["express", "npm:4.22.2"],\
           ["jsonwebtoken", "npm:9.0.3"],\
-          ["mongoose", "npm:8.24.1"],\
+          ["mongoose", "npm:8.24.2"],\
           ["multer", "npm:1.4.5-lts.2"],\
           ["nodemon", "npm:3.1.14"],\
           ["nspell", "npm:2.1.5"],\
-          ["pdfjs-dist", "npm:6.1.200"],\
+          ["pdfjs-dist", "npm:6.2.108"],\
           ["pdfkit", "npm:0.15.2"],\
           ["uuid", "npm:9.0.1"]\
         ],\
@@ -2149,11 +2149,11 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["pdfjs-dist", [\
-      ["npm:6.1.200", {\
-        "packageLocation": "../../../.yarn/berry/cache/pdfjs-dist-npm-6.1.200-250be7daea-10c0.zip/node_modules/pdfjs-dist/",\
+      ["npm:6.2.108", {\
+        "packageLocation": "../../../.yarn/berry/cache/pdfjs-dist-npm-6.2.108-63e3da5b6e-10c0.zip/node_modules/pdfjs-dist/",\
         "packageDependencies": [\
-          ["pdfjs-dist", "npm:6.1.200"],\
-          ["@napi-rs/canvas", "npm:1.0.2"]\
+          ["pdfjs-dist", "npm:6.2.108"],\
+          ["@napi-rs/canvas", "npm:1.0.3"]\
         ],\
         "linkType": "HARD"\
       }]\

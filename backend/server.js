@@ -5,6 +5,7 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 const seedAdmin = require("./config/seedAdmin");
 const pdfRoutes = require("./routes/pdfRoutes");
+const editionRoutes = require("./routes/editionRoutes");
 const authRoutes = require("./routes/authRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 
@@ -28,6 +29,7 @@ app.get("/api/health", (req, res) => res.json({ success: true, message: "API is 
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/pdf", pdfRoutes);
+app.use("/api/editions", editionRoutes);
 
 // --- 404 handler ---
 app.use((req, res) => {

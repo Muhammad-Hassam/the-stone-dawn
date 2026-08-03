@@ -106,4 +106,4 @@ async function checkTextWithLLM(fullText, callModel, ruleId) {
   return allMistakes;
 }
 
-module.exports = { checkTextWithLLM, buildProofreadingPrompt };
+module.exports = { checkTextWithLLM, buildProofreadingPrompt, extractJsonArray };

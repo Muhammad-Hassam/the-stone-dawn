@@ -20,6 +20,8 @@ function categoryColor(category) {
   if (c.includes("SPELL") || c.includes("TYPO")) return "var(--color-redpen)";
   if (c.includes("GRAMMAR")) return "var(--color-brass)";
   if (c.includes("PUNCT")) return "var(--color-punct)";
+  if (c.includes("HALLUCINATION")) return "var(--color-accent)";
+  if (c.includes("SENSITIVE")) return "var(--color-sensitive)";
   return "var(--color-muted)";
 }
 

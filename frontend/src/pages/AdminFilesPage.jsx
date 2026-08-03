@@ -8,15 +8,10 @@ function StatusTag({ status }) {
   const map = {
     completed: "text-greenpen border-greenpen",
     processing: "text-brass border-brass",
-    pending: "text-muted border-rule",
     failed: "text-redpen border-redpen",
   };
   return (
-    <span
-      className={`font-ui text-[10px] uppercase font-medium px-2 py-0.5 border rounded-sm ${
-        map[status] || map.pending
-      }`}
-    >
+    <span className={`font-ui text-[10px] uppercase font-medium px-2 py-0.5 border rounded-sm ${map[status] || map.processing}`}>
       {status}
     </span>
   );
@@ -38,10 +33,10 @@ export default function AdminFilesPage() {
     }
   };
 
-  const fetchFiles = async (searchTerm = search, uid = userId) => {
+  const fetchEditions = async (searchTerm = search, uid = userId) => {
     setLoading(true);
     try {
-      const { data } = await axiosClient.get("/pdf/history", {
+      const { data } = await axiosClient.get("/editions/history", {
         params: { search: searchTerm, userId: uid || undefined, limit: 100 },
       });
       setItems(data.data);
@@ -54,13 +49,13 @@ export default function AdminFilesPage() {
 
   useEffect(() => {
     fetchStaff();
-    fetchFiles();
+    fetchEditions();
   }, []);
 
   const handleDelete = async (id) => {
-    if (!confirm("Permanently delete this file?")) return;
+    if (!confirm("Permanently delete this edition and all its pages?")) return;
     try {
-      await axiosClient.delete(`/pdf/${id}`);
+      await axiosClient.delete(`/editions/${id}`);
       toast.success("Deleted");
       setItems((prev) => prev.filter((i) => i._id !== id));
     } catch (err) {
@@ -76,21 +71,21 @@ export default function AdminFilesPage() {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            fetchFiles(search, userId);
+            fetchEditions(search, userId);
           }}
           className="flex flex-wrap gap-3 mb-6"
         >
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search filename…"
+            placeholder="Search section…"
             className="font-serif border border-rule rounded-md focus:border-ink bg-card px-3 py-1.5 text-sm w-56 outline-none"
           />
           <select
             value={userId}
             onChange={(e) => {
               setUserId(e.target.value);
-              fetchFiles(search, e.target.value);
+              fetchEditions(search, e.target.value);
             }}
             className="font-serif border border-rule rounded-md focus:border-ink bg-card px-3 py-1.5 text-sm outline-none"
           >
@@ -107,40 +102,37 @@ export default function AdminFilesPage() {
         </form>
 
         {loading && <p className="font-serif text-muted">Loading…</p>}
-        {!loading && items.length === 0 && (
-          <p className="font-serif text-muted">No files match this filter.</p>
-        )}
+        {!loading && items.length === 0 && <p className="font-serif text-muted">No editions match this filter.</p>}
 
         <div className="divide-y divide-rule border border-rule rounded-md">
-          {items.map((doc) => (
-            <div key={doc._id} className="flex flex-wrap items-center justify-between gap-3 p-4">
+          {items.map((ed) => (
+            <div key={ed._id} className="flex flex-wrap items-center justify-between gap-3 p-4">
               <div>
                 <Link
-                  to={`/document/${doc._id}`}
+                  to={`/edition/${ed._id}`}
                   className="font-display text-base text-ink hover:text-accent transition-colors"
                 >
-                  {doc.originalName}
+                  {ed.section} — {new Date(ed.createdAt).toLocaleDateString()}
                 </Link>
                 <p className="font-ui text-[12px] text-muted mt-1">
-                  {doc.uploadedBy?.name || "Unknown"} ({doc.uploadedBy?.email || "—"}) &middot;{" "}
-                  {new Date(doc.createdAt).toLocaleDateString()} &middot;{" "}
-                  {doc.mistakeCount ?? 0} slip(s)
-                  {doc.status === "completed" &&
-                    ` · S:${doc.spellingCount ?? 0} G:${doc.grammarCount ?? 0} P:${doc.punctuationCount ?? 0}`}
+                  {ed.uploadedBy?.name || "Unknown"} ({ed.uploadedBy?.email || "—"}) &middot;{" "}
+                  {ed.pageCount ?? 0} page(s) &middot; {ed.mistakeCount ?? 0} slip(s)
                   {" · "}
-                  {engineLabel(doc.checkerEngine)}
+                  S:{ed.spellingCount ?? 0} G:{ed.grammarCount ?? 0} P:{ed.punctuationCount ?? 0}
+                  {" · "}
+                  {engineLabel(ed.checkerEngine)}
                 </p>
               </div>
               <div className="flex items-center gap-4">
-                <StatusTag status={doc.status} />
+                <StatusTag status={ed.status} />
                 <Link
-                  to={`/document/${doc._id}`}
+                  to={`/edition/${ed._id}`}
                   className="font-ui text-[13px] font-medium text-accent hover:underline"
                 >
                   Open
                 </Link>
                 <button
-                  onClick={() => handleDelete(doc._id)}
+                  onClick={() => handleDelete(ed._id)}
                   className="font-ui text-[13px] text-muted hover:text-redpen"
                 >
                   Remove

@@ -15,6 +15,7 @@ export default {
         greenpen: "var(--color-greenpen)",
         brass: "var(--color-brass)",
         punct: "var(--color-punct)",
+        sensitive: "var(--color-sensitive)",
       },
       fontFamily: {
         display: ["'Playfair Display'", "serif"],

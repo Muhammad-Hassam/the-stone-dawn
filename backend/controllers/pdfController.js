@@ -2,105 +2,33 @@ const fs = require("fs");
 const path = require("path");
 
 const PdfDocument = require("../models/PdfDocument");
-const { checkText, applyCorrections } = require("../utils/grammarChecker");
-const { checkTextWithGemini } = require("../utils/geminiChecker");
-const { checkTextWithChatGPT } = require("../utils/openaiChecker");
-const { checkTextOffline } = require("../utils/offlineSpellChecker");
-const { generateCorrectedPdf } = require("../utils/pdfGenerator");
-const { extractTextWithPositions, attachBoxesToMistakes } = require("../utils/pdfTextExtractor");
-const { UPLOAD_DIR } = require("../middleware/upload");
+const { processUploadedFile, canAccessDocument } = require("../services/pdfProcessingService");
 
-const ENGINES = {
-  languagetool: checkText,
-  "ai-gemini": checkTextWithGemini,
-  "ai-chatgpt": checkTextWithChatGPT,
-  "offline-spellcheck": checkTextOffline,
-};
-
-// POST /api/pdf/upload
+// POST /api/pdf/upload — single standalone file (still supported for direct/simple use)
 async function uploadPdf(req, res) {
   if (!req.file) {
     return res.status(400).json({ success: false, message: "No PDF file uploaded" });
   }
 
-  const absolutePath = req.file.path;
-  const relativePath = path.join(process.env.UPLOAD_DIR || "uploads", req.file.filename);
-  const engine = ENGINES[req.body.engine] ? req.body.engine : "languagetool";
-
-  // Create the DB record immediately so it shows in history even if processing fails
-  const doc = await PdfDocument.create({
+  const doc = await processUploadedFile({
+    multerFile: req.file,
     uploadedBy: req.user.id,
-    originalName: req.file.originalname,
-    storedName: req.file.filename,
-    originalPath: relativePath, // <-- path saved in DB, as requested
-    fileSize: req.file.size,
-    mimeType: req.file.mimetype,
-    status: "processing",
-    checkerEngine: engine,
+    engine: req.body.engine,
+    enableHallucinationCheck: req.body.enableHallucinationCheck === "true",
+    enableSensitiveCheck: req.body.enableSensitiveCheck === "true",
+    enableSummary: req.body.enableSummary === "true",
+    aiExtrasProvider: req.body.aiExtrasProvider === "chatgpt" ? "chatgpt" : "gemini",
   });
 
-  try {
-    // 1. Extract text AND per-run bounding boxes from the uploaded PDF
-    const fileBuffer = fs.readFileSync(absolutePath);
-    const parsed = await extractTextWithPositions(fileBuffer);
-    const extractedText = parsed.fullText;
-
-    // 2. Run spelling/grammar/punctuation check with whichever engine was selected
-    const rawMistakes = await ENGINES[engine](extractedText);
-
-    // 3. Attach on-page box(es) to each mistake so it can be pinned on the actual PDF
-    const mistakes = attachBoxesToMistakes(rawMistakes, parsed.items);
-
-    // 4. Tally mistakes by category for separate counts in the UI
-    const counts = mistakes.reduce(
-      (acc, m) => {
-        const cat = (m.category || "").toUpperCase();
-        if (cat === "SPELLING") acc.spelling += 1;
-        else if (cat === "GRAMMAR") acc.grammar += 1;
-        else if (cat === "PUNCTUATION") acc.punctuation += 1;
-        else acc.other += 1;
-        return acc;
-      },
-      { spelling: 0, grammar: 0, punctuation: 0, other: 0 }
-    );
-
-    // 5. Build corrected text using top suggestions
-    const correctedText = applyCorrections(extractedText, mistakes);
-
-    // 6. Generate a corrected PDF file on disk
-    const correctedFileName = `corrected-${req.file.filename.replace(/\.pdf$/i, "")}.pdf`;
-    const correctedAbsolutePath = path.join(UPLOAD_DIR, correctedFileName);
-    await generateCorrectedPdf(correctedText, correctedAbsolutePath);
-    const correctedRelativePath = path.join(process.env.UPLOAD_DIR || "uploads", correctedFileName);
-
-    // 7. Save everything to MongoDB (this record IS the history entry)
-    doc.extractedText = extractedText;
-    doc.correctedText = correctedText;
-    doc.mistakes = mistakes;
-    doc.mistakeCount = mistakes.length;
-    doc.spellingCount = counts.spelling;
-    doc.grammarCount = counts.grammar;
-    doc.punctuationCount = counts.punctuation;
-    doc.otherCount = counts.other;
-    doc.pageCount = parsed.numPages;
-    doc.pages = parsed.pages;
-    doc.correctedFileName = correctedFileName;
-    doc.correctedPath = correctedRelativePath;
-    doc.status = "completed";
-    await doc.save();
-
-    return res.status(201).json({ success: true, data: doc });
-  } catch (err) {
-    console.error("[uploadPdf] processing error:", err);
-    doc.status = "failed";
-    doc.errorMessage = err.message;
-    await doc.save();
+  if (doc.status === "failed") {
     return res.status(500).json({
       success: false,
       message: "File uploaded but processing failed",
       data: doc,
     });
   }
+
+  return res.status(201).json({ success: true, data: doc });
 }
 
 // GET /api/pdf/history?page=1&limit=10&search=&userId=
@@ -139,18 +67,13 @@ async function getHistory(req, res) {
   });
 }
 
-function canAccess(doc, user) {
-  if (user.role === "admin") return true;
-  return doc.uploadedBy.toString() === user.id;
-}
-
 // GET /api/pdf/:id
 async function getById(req, res) {
   const doc = await PdfDocument.findById(req.params.id).populate("uploadedBy", "name email");
   if (!doc) {
     return res.status(404).json({ success: false, message: "Document not found" });
   }
-  if (!canAccess(doc, req.user)) {
+  if (!canAccessDocument(doc, req.user)) {
     return res.status(403).json({ success: false, message: "You don't have access to this document" });
   }
   res.json({ success: true, data: doc });
@@ -160,7 +83,7 @@ async function getById(req, res) {
 async function viewOriginal(req, res) {
   const doc = await PdfDocument.findById(req.params.id);
   if (!doc) return res.status(404).json({ success: false, message: "Document not found" });
-  if (!canAccess(doc, req.user)) {
+  if (!canAccessDocument(doc, req.user)) {
     return res.status(403).json({ success: false, message: "You don't have access to this document" });
   }
 
@@ -178,7 +101,7 @@ async function viewOriginal(req, res) {
 async function downloadOriginal(req, res) {
   const doc = await PdfDocument.findById(req.params.id);
   if (!doc) return res.status(404).json({ success: false, message: "Document not found" });
-  if (!canAccess(doc, req.user)) {
+  if (!canAccessDocument(doc, req.user)) {
     return res.status(403).json({ success: false, message: "You don't have access to this document" });
   }
 
@@ -193,7 +116,7 @@ async function downloadOriginal(req, res) {
 async function downloadCorrected(req, res) {
   const doc = await PdfDocument.findById(req.params.id);
   if (!doc) return res.status(404).json({ success: false, message: "Document not found" });
-  if (!canAccess(doc, req.user)) {
+  if (!canAccessDocument(doc, req.user)) {
     return res.status(403).json({ success: false, message: "You don't have access to this document" });
   }
   if (!doc.correctedPath) {
@@ -211,7 +134,7 @@ async function downloadCorrected(req, res) {
 async function deleteDocument(req, res) {
   const doc = await PdfDocument.findById(req.params.id);
   if (!doc) return res.status(404).json({ success: false, message: "Document not found" });
-  if (!canAccess(doc, req.user)) {
+  if (!canAccessDocument(doc, req.user)) {
     return res.status(403).json({ success: false, message: "You don't have access to this document" });
   }
 

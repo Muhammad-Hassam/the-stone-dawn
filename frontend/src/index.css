@@ -13,6 +13,7 @@
   --color-greenpen: #3F6F52;
   --color-brass: #A3872E;
   --color-punct: #3B6E91;
+  --color-sensitive: #B8621B;
 }
 
 .dark {
@@ -26,6 +27,7 @@
   --color-greenpen: #6FBF93;
   --color-brass: #D9B65C;
   --color-punct: #5B9BC7;
+  --color-sensitive: #E08A4A;
 }
 
 html {

@@ -3,9 +3,11 @@ import { ToastContainer } from "react-toastify";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import LoginPage from "./pages/LoginPage";
-import UploadPage from "./pages/UploadPage";
+import NewProofPage from "./pages/NewProofPage";
 import HistoryPage from "./pages/HistoryPage";
 import ResultPage from "./pages/ResultPage";
+import EditionReportPage from "./pages/EditionReportPage";
+import PrintFixListPage from "./pages/PrintFixListPage";
 import AdminOverviewPage from "./pages/AdminOverviewPage";
 import AdminStaffPage from "./pages/AdminStaffPage";
 import AdminFilesPage from "./pages/AdminFilesPage";
@@ -17,6 +19,16 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
 
+        {/* Print view has no site chrome, so it's not nested under Navbar */}
+        <Route
+          path="/edition/:id/print"
+          element={
+            <ProtectedRoute>
+              <PrintFixListPage />
+            </ProtectedRoute>
+          }
+        />
+
         <Route
           path="/*"
           element={
@@ -24,9 +36,10 @@ export default function App() {
               <>
                 <Navbar />
                 <Routes>
-                  <Route path="/" element={<UploadPage />} />
+                  <Route path="/" element={<NewProofPage />} />
                   <Route path="/history" element={<HistoryPage />} />
                   <Route path="/document/:id" element={<ResultPage />} />
+                  <Route path="/edition/:id" element={<EditionReportPage />} />
                   <Route
                     path="/admin"
                     element={

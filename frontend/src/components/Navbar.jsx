@@ -20,9 +20,6 @@ export default function Navbar() {
   return (
     <header className="bg-card border-b border-rule">
       <div className=" px-6 h-20 flex items-center justify-between gap-4">
-        {/* <div className="flex items-center h-16 shrink-0">
-          <img src={Logo} alt="Logo" className="h-full w-auto object-contain" />
-        </div> */}
         <div className="flex items-center">
           <Link to="/" className="flex items-center h-16 shrink-0">
             <img
@@ -65,7 +62,6 @@ export default function Navbar() {
               </>
             )}
             <DarkModeToggle />
-
             <button
               onClick={handleLogout}
               className="font-ui text-[13px] text-muted hover:text-ink"
